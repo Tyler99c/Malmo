@@ -23,7 +23,7 @@
 
 // To run from the jar file without compiling:   java -cp MalmoJavaJar.jar:JavaExamples_run_mission.jar -Djava.library.path=. JavaExamples_run_mission (on Linux)
 //                                               java -cp MalmoJavaJar.jar;JavaExamples_run_mission.jar -Djava.library.path=. JavaExamples_run_mission (on Windows)
-
+//Comment
 import com.microsoft.msr.malmo.*;
 
 public class JavaExamples_run_mission
