@@ -110,6 +110,7 @@ public class JavaExamples_run_mission
                 return;
             }
             world_state = agent_host.getWorldState();
+            world_state.getVideoFrames();
             System.out.print( "video,observations,rewards received: " );
             System.out.print( world_state.getNumberOfVideoFramesSinceLastState() + "," );
             System.out.print( world_state.getNumberOfObservationsSinceLastState() + "," );
