@@ -4,13 +4,15 @@ import java.util.Random;
 
 import neatsorce.ConnectionGene;
 import neatsorce.Genome;
+import neatsorce.InnovationGenerator;
 import neatsorce.NodeGene;
 import neatsorce.NodeGene.TYPE;
 
 public class TestCrossover {
 	public static void main(String[] args) {
+		InnovationGenerator innovation = new InnovationGenerator();
 		GenomePrinter printer = new GenomePrinter();
-		Genome parent1 = new Genome();
+		Genome parent1 = new Genome(innovation);
 		for(int i = 0; i < 3; i++){
 			NodeGene node = new NodeGene(TYPE.INPUT, i + 1);
 			parent1.addNodeGene(node);
@@ -23,8 +25,8 @@ public class TestCrossover {
 		parent1.addConnectionGene(new ConnectionGene(2,5,1f,true,4));
 		parent1.addConnectionGene(new ConnectionGene(5,4,1f,true,5));
 		parent1.addConnectionGene(new ConnectionGene(1,5,1f,true,8));
-		
-		Genome parent2 = new Genome();
+	    innovation = new InnovationGenerator();
+		Genome parent2 = new Genome(innovation);
 		for (int i = 0; i < 3; i++)
 		{
 			NodeGene node = new NodeGene(TYPE.INPUT, i+1);
