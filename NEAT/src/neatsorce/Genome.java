@@ -1,5 +1,6 @@
 package neatsorce;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -23,6 +24,7 @@ public class Genome {
 		innovation  = i;
 	}
 	
+	
 	public void addNodeGene(NodeGene gene) {
 		nodes.put(gene.getId(),gene);
 	}
@@ -38,9 +40,11 @@ public class Genome {
 	
 	public void addConnectionMutation(Random r) {
 		//Finds a random node
-		//System.out.println("Times through:" + times );
 		NodeGene node1 = nodes.get(r.nextInt(nodes.size()));
 		NodeGene node2 = nodes.get(r.nextInt(nodes.size()));
+		if(node1.getId() == node2.getId()) {
+			return;
+		}
 		float weight = r.nextFloat()*2f-1f;
 		boolean reversed = false;
 		//Tests to see if the connection should be reversed, so node 1 is the output while node 2 is input
@@ -53,6 +57,7 @@ public class Genome {
 		}
 		
 		boolean connectionExists = false;
+		ConnectionGene conBetween = null;
 		for (ConnectionGene con : connections.values()) {
 			//If a connection where node1 is the innode and node2 is an outnode
 			if (con.getInNode() == node1.getId() && con.getOutNode() == node2.getId()) {
@@ -66,19 +71,53 @@ public class Genome {
 			}
 		}
 		if(connectionExists) {
-			//times = times + 1;
-			//addConnectionMutation(r, times);
-			return;
-		}
-		if(node1.getId() == node2.getId()) {
-			//times = times + 1;
-			//addConnectionMutation(r, times);
 			return;
 		}
 		ConnectionGene newCon =	new ConnectionGene(reversed ? node2.getId() : node1.getId(), reversed ? node1.getId() : node2.getId(), weight,true, innovation.getInnovation());
 		connections.put(newCon.getInnovation(),newCon);
 	}
+	
+	
+	public void addConnectionMutationNew(Random r) {
+		//Finds a random node
+		NodeGene node1 = nodes.get(r.nextInt(nodes.size()));
+		ArrayList<Integer> options = node1.getNotConnected();
+		int hello = r.nextInt(options.size());
+		NodeGene node2 = nodes.get(r.nextInt(hello));
+		if(node1.getId() == node2.getId()) {
+			return;
+		}
+		float weight = r.nextFloat()*2f-1f;
+		boolean reversed = false;
+		//Tests to see if the connection should be reversed, so node 1 is the output while node 2 is input
+		if (node1.getType() == NodeGene.TYPE.HIDDEN && node2.getType() == NodeGene.TYPE.INPUT) {
+			reversed = true;
+		} else if (node1.getType() == NodeGene.TYPE.OUTPUT && node2.getType() == NodeGene.TYPE.HIDDEN) {
+			reversed = true;
+		} else if (node1.getType() == NodeGene.TYPE.OUTPUT && node2.getType() == NodeGene.TYPE.INPUT) {
+			reversed = true;
+		}
 		
+		boolean connectionExists = false;
+		ConnectionGene conBetween = null;
+		for (ConnectionGene con : connections.values()) {
+			//If a connection where node1 is the innode and node2 is an outnode
+			if (con.getInNode() == node1.getId() && con.getOutNode() == node2.getId()) {
+				connectionExists = true;
+				break;
+			}
+			//If a connection where node2 is the innode and node1 is 
+			else if (con.getInNode() == node2.getId() && con.getOutNode() == node1.getId()) {
+				connectionExists = true;
+				break;
+			}
+		}
+		if(connectionExists) {
+			return;
+		}
+		ConnectionGene newCon =	new ConnectionGene(reversed ? node2.getId() : node1.getId(), reversed ? node1.getId() : node2.getId(), weight,true, innovation.getInnovation());
+		connections.put(newCon.getInnovation(),newCon);
+	}
 	/**
 	 * Adds a node
 	 * @param r
@@ -102,8 +141,14 @@ public class Genome {
 		ConnectionGene newToOut = new ConnectionGene(newNode.getId(), outNode.getId(), con.getWeight(), true,innovation.getInnovation());
 		
 		nodes.put(newNode.getId(), newNode);
+		
+		for(NodeGene gen : nodes.values()) {
+			gen.addNotConnected(newNode.getId());
+		}
 		connections.put(inToNew.getInnovation(),inToNew);
+		inNode.establishConnection(newNode.getId());
 		connections.put(newToOut.getInnovation(),newToOut);
+		outNode.establishConnection(newNode.getId());
 	}
 	
 	/**
@@ -115,8 +160,12 @@ public class Genome {
 		ConnectionGene con = connections.get(random.nextInt(connections.size()));
 		con.setWeight(random.nextFloat());
 	}
+	
+	public void changeWeight(Random random, ConnectionGene con) {
+		con.setWeight(random.nextFloat());
+	}
 	/**
-	 * Performs a cossover between two networks
+	 * Performs a crossover between two networks
 	 * @param parent1
 	 * @param parent2
 	 * @param r

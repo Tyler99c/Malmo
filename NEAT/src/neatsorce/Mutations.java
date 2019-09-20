@@ -7,12 +7,17 @@ import java.util.Map;
 import java.util.Random;
 
 import neatsorce.NodeGene.TYPE;
+import neatsorce.NodeGene;
 
 
 public class Mutations {
 	
-	public void addConnectionMutationTest(Random r) {
+	
+	
+	public Genome addConnectionMutationTest(Random r, Genome network) {
 		//Finds a random node
+		Map<Integer, NodeGene> nodes = network.getNodeGenes();
+		Map<Integer, ConnectionGene> connections = network.getConnectionGenes();
 		NodeGene node1 = nodes.get(r.nextInt(nodes.size()));
 		Map<Integer, ConnectionGene> AllConnections = new HashMap<Integer, ConnectionGene>();
 		int track = 0;
@@ -53,14 +58,16 @@ public class Mutations {
 		}
 		if(connectionExists) {
 			
-			return;
+			return network;
 		}
 		System.out.println("Connection between" + node1.getId() + "and" + node2.getId());
 		ConnectionGene newCon =	new ConnectionGene(reversed ? node2.getId() : node1.getId(), reversed ? node1.getId() : node2.getId(), weight,true, innovation.getInnovation());
 		connections.put(newCon.getInnovation(),newCon);
+		network.setConnections(connections);
+		
 	}
 	
-	public void addConnectionMutation(Random r) {
+	public Genome addConnectionMutation(Random r) {
 		//Finds a random node
 		int k = r.nextInt(nodes.size());
 		System.out.println(k);
@@ -112,7 +119,7 @@ public class Mutations {
 	 * Adds a node
 	 * @param r
 	 */
-	public void addNodeMutation (Random r) {
+	public Genome addNodeMutation (Random r) {
 		//Gets a random connection between two nodes
 		ConnectionGene con = connections.get(r.nextInt(connections.size()));
 		
@@ -130,8 +137,8 @@ public class Mutations {
 		//Creates a connection from the new node to the out node
 		ConnectionGene newToOut = new ConnectionGene(newNode.getId(), outNode.getId(), con.getWeight(), true,innovation.getInnovation());
 		
-		nodes.put(newNode.getId(), newNode);
-		connections.put(inToNew.getInnovation(),inToNew);
-		connections.put(newToOut.getInnovation(),newToOut);
+		network.addNodeGene(newNode);
+		network.addConnectionGene(inToNew);
+		network.addConnectionGene(newToOut);
 	}
 }
