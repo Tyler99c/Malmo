@@ -14,28 +14,11 @@ public class NodeGene {
 	public NodeGene(TYPE t, int i) {
 		id = i;
 		type = t;
-		notConnected = null;
 	}
 	private TYPE type;
 	private int id;
-	private ArrayList<Integer> notConnected;
 
-	public void setNotConnected(ArrayList<Integer> notConnected) {
-		this.notConnected = notConnected;
-	}
-	
-	public ArrayList<Integer> getNotConnected(){
-		return notConnected;
-	}
-	
-	public void establishConnection(int number) {
-		notConnected.remove(number);
-	}
-	
-	public void addNotConnected(int number) {
-		notConnected.add(number);
-	}
-	
+
 	public TYPE getType() {
 		return type;
 	}
@@ -47,5 +30,9 @@ public class NodeGene {
 	public NodeGene copy() {
 		// TODO Auto-generated method stub
 		return new NodeGene(type, id);
+	}
+	
+	public float sigmoid(float f) {
+		return (float) (1/( 1 + Math.pow(Math.E,(-1*f))));
 	}
 }

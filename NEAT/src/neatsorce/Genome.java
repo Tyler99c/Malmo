@@ -2,6 +2,7 @@ package neatsorce;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -38,7 +39,7 @@ public class Genome {
 		return nodes;
 	}
 	
-	public void addConnectionMutation(Random r) {
+	public void addConnectionMutationold(Random r) {
 		//Finds a random node
 		NodeGene node1 = nodes.get(r.nextInt(nodes.size()));
 		NodeGene node2 = nodes.get(r.nextInt(nodes.size()));
@@ -78,15 +79,34 @@ public class Genome {
 	}
 	
 	
-	public void addConnectionMutationNew(Random r) {
+	public void addConnectionMutation(Random r) {
 		//Finds a random node
 		NodeGene node1 = nodes.get(r.nextInt(nodes.size()));
-		ArrayList<Integer> options = node1.getNotConnected();
-		int hello = r.nextInt(options.size());
-		NodeGene node2 = nodes.get(r.nextInt(hello));
-		if(node1.getId() == node2.getId()) {
+		Map<Integer, NodeGene> connectionNodes = new HashMap<Integer, NodeGene>();
+		int increment = 0;
+		for(NodeGene node2 : nodes.values()) {
+			if (node1.getId() != node2.getId()) {
+				boolean connection = false;
+				for (ConnectionGene con : connections.values()) {
+					//If a connection where node1 is the innode and node2 is an outnode
+					if (con.getInNode() == node1.getId() || con.getOutNode() == node1.getId()) {
+						if (con.getInNode() == node2.getId() || con.getOutNode() == node2.getId()) {
+							connection = true;
+						}
+					}
+				}
+				if(connection == false) {
+					connectionNodes.put(increment, node2);
+					increment++;
+				}
+			}
+		}
+		if (increment == 0) {
+			System.out.println("All nodes connected");
+			addNodeMutation(r);
 			return;
 		}
+		NodeGene node2 = connectionNodes.get(r.nextInt(connectionNodes.size()));
 		float weight = r.nextFloat()*2f-1f;
 		boolean reversed = false;
 		//Tests to see if the connection should be reversed, so node 1 is the output while node 2 is input
@@ -96,24 +116,6 @@ public class Genome {
 			reversed = true;
 		} else if (node1.getType() == NodeGene.TYPE.OUTPUT && node2.getType() == NodeGene.TYPE.INPUT) {
 			reversed = true;
-		}
-		
-		boolean connectionExists = false;
-		ConnectionGene conBetween = null;
-		for (ConnectionGene con : connections.values()) {
-			//If a connection where node1 is the innode and node2 is an outnode
-			if (con.getInNode() == node1.getId() && con.getOutNode() == node2.getId()) {
-				connectionExists = true;
-				break;
-			}
-			//If a connection where node2 is the innode and node1 is 
-			else if (con.getInNode() == node2.getId() && con.getOutNode() == node1.getId()) {
-				connectionExists = true;
-				break;
-			}
-		}
-		if(connectionExists) {
-			return;
 		}
 		ConnectionGene newCon =	new ConnectionGene(reversed ? node2.getId() : node1.getId(), reversed ? node1.getId() : node2.getId(), weight,true, innovation.getInnovation());
 		connections.put(newCon.getInnovation(),newCon);
@@ -136,19 +138,13 @@ public class Genome {
 		//Creates a new Hidden layer node
 		NodeGene newNode = new NodeGene(TYPE.HIDDEN, nodes.size());
 		//Connects it to the inNode
-		ConnectionGene inToNew = new ConnectionGene(inNode.getId(), newNode.getId(), r.nextFloat() ,true,innovation.getInnovation());
+		ConnectionGene inToNew = new ConnectionGene(inNode.getId(), newNode.getId(), 1.0f ,true,innovation.getInnovation());
 		//Creates a connection from the new node to the out node
 		ConnectionGene newToOut = new ConnectionGene(newNode.getId(), outNode.getId(), con.getWeight(), true,innovation.getInnovation());
 		
 		nodes.put(newNode.getId(), newNode);
-		
-		for(NodeGene gen : nodes.values()) {
-			gen.addNotConnected(newNode.getId());
-		}
 		connections.put(inToNew.getInnovation(),inToNew);
-		inNode.establishConnection(newNode.getId());
 		connections.put(newToOut.getInnovation(),newToOut);
-		outNode.establishConnection(newNode.getId());
 	}
 	
 	/**
@@ -156,9 +152,16 @@ public class Genome {
 	 * @param random
 	 */
 	public void changeWeight(Random random) {
-		//Gets a random connection between two nodes
+		float i = random.nextFloat();
 		ConnectionGene con = connections.get(random.nextInt(connections.size()));
+		if(i >= 0.9f) {
+		//Gets a random connection between two nodes
 		con.setWeight(random.nextFloat());
+		}
+		else {
+			float newWeight = con.getWeight()* random.nextInt(2) - 2;
+			con.setWeight(newWeight);
+		}
 	}
 	
 	public void changeWeight(Random random, ConnectionGene con) {
@@ -189,6 +192,23 @@ public class Genome {
 		}
 		
 		return child;
+	}
+	/**
+	 * Runs the network to return an output
+	 * @return
+	 */
+	public HashMap<Integer, Float> runGenome(HashMap<Integer, Float> inputs) {
+		HashMap<Integer, Float> outputs = null;
+		//Adds the inputs to all starting nodes
+		HashMap<Integer, NodeGene> inputNodes = null;
+		int increment = 0;
+		for(NodeGene node2 : nodes.values()) {
+			if(node2.getType() == NodeGene.TYPE.INPUT) {
+				inputNodes.put(increment, node2);
+				increment++;
+			}
+		}
+		return outputs;
 	}
 
 }

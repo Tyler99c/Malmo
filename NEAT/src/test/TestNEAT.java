@@ -46,7 +46,6 @@ class TestNEAT {
 		test = parent1.getNodeGenes();
 		Map<Integer, ConnectionGene> cons = parent1.getConnectionGenes();
 		assertEquals(cons.get(3).getInNode(),3);
-		assertNotEquals(test.get(4).);
 		
 		//make 3 random no
 		parent1 = TestMutation.testAddNode(parent1);

@@ -65,4 +65,8 @@ public class ConnectionGene {
 	public ConnectionGene copy() {
 		return new ConnectionGene(inNode, outNode, weight, expressed, innovation);
 	}
+	
+	public float adjustSignal(float f) {
+		return f*weight;
+	}
 }

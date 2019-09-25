@@ -16,7 +16,6 @@ public class TestMutation {
 	}
 	
 	public static Genome testAddNodeWithMutationCalls(Genome parent1) {
-		Mutations mutant = new Mutations(parent1);
 		return parent1;
 	}
 	
