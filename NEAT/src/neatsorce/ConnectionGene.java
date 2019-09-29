@@ -1,5 +1,9 @@
 package neatsorce;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ConnectionGene {
 	private int inNode;
 	private int outNode;
@@ -66,7 +70,7 @@ public class ConnectionGene {
 		return new ConnectionGene(inNode, outNode, weight, expressed, innovation);
 	}
 	
-	public float adjustSignal(float f) {
-		return f*weight;
+	public float sendThrough(ArrayList<Float> inputs, Map<Integer,ConnectionGene> connections, Map<Integer,NodeGene> nodes) {
+		return nodes.get(inNode).getSignal(inputs, connections, nodes) * weight;
 	}
 }
