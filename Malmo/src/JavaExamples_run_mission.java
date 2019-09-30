@@ -25,9 +25,11 @@
 //                                               java -cp MalmoJavaJar.jar;JavaExamples_run_mission.jar -Djava.library.path=. JavaExamples_run_mission (on Windows)
 //Comment
 import com.microsoft.msr.malmo.*;
+ 
 
 public class JavaExamples_run_mission
 {
+
     static
     {
         System.loadLibrary("MalmoJava"); // attempts to load MalmoJava.dll (on Windows) or libMalmoJava.so (on Linux)
@@ -101,8 +103,8 @@ public class JavaExamples_run_mission
 
         // main loop:
         do {
-            agent_host.sendCommand( "move 1" );
-            agent_host.sendCommand( "turn " + Math.random() );
+            //agent_host.sendCommand( "move 1" );
+            //agent_host.sendCommand( "turn " + Math.random() );
             try {
                 Thread.sleep(500);
             } catch(InterruptedException ex) {
@@ -110,11 +112,18 @@ public class JavaExamples_run_mission
                 return;
             }
             world_state = agent_host.getWorldState();
-            world_state.getVideoFrames();
-            System.out.print( "video,observations,rewards received: " );
+            TimestampedVideoFrameVector troy = world_state.getVideoFrames();
+            TimestampedVideoFrame bob = troy.get((int) (troy.size()-1));
+            ByteVector hi = bob.getPixels();
+            System.out.print("Colors in the image" + hi.size());
+            System.out.println(" Red in first pixel = " + hi.get(0));
+            System.out.println(" Blue in first pixel = " + hi.get(1));
+            System.out.println(" Green in first pixel = " + hi.get(2));
+            System.out.print(" Frames that passed = " + world_state.getNumberOfVideoFramesSinceLastState());
+            System.out.print( " video,observations,rewards received: " );
             System.out.print( world_state.getNumberOfVideoFramesSinceLastState() + "," );
             System.out.print( world_state.getNumberOfObservationsSinceLastState() + "," );
-            System.out.println( world_state.getNumberOfRewardsSinceLastState() );
+            System.out.println(world_state.getNumberOfRewardsSinceLastState());
             for( int i = 0; i < world_state.getRewards().size(); i++ ) {
                 TimestampedReward reward = world_state.getRewards().get(i);
                 System.out.println( "Summed reward: " + reward.getValue() );
