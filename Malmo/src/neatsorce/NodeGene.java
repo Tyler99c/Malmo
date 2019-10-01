@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.microsoft.msr.malmo.ByteVector;
+
 public class NodeGene {
 
 	public enum TYPE {
@@ -34,7 +36,7 @@ public class NodeGene {
 		return new NodeGene(type, id);
 	}
 	
-	public float getSignal(ArrayList<Float> inputs, Map<Integer,ConnectionGene> connections, Map<Integer,NodeGene> nodes) {
+	public float getSignal(ByteVector inputs, Map<Integer,ConnectionGene> connections, Map<Integer,NodeGene> nodes) {
 		if(type == TYPE.INPUT) {
 			return inputs.get(id);
 		}

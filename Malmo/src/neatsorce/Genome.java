@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import com.microsoft.msr.malmo.ByteVector;
+
 import neatsorce.NodeGene.TYPE;
 
 public class Genome {
@@ -211,7 +213,7 @@ public class Genome {
 	 * Runs the network to return an output
 	 * @return
 	 */
-	public ArrayList<Float> runGenome(ArrayList<Float> inputs) {
+	public ArrayList<Float> runGenome(ByteVector inputs) {
 		ArrayList<Float> outputs = new ArrayList();
 		Map<Integer, NodeGene> outputNodes = getOutputNodes();
         for(NodeGene gen: outputNodes.values()) {
