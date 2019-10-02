@@ -32,37 +32,22 @@ import com.microsoft.msr.malmo.*;
 import neatsorce.Genome;
  
 
-public class JavaExamples_run_mission
+public class MalmoMission
 {
-
 	private Genome gen;
+	private int hi;
 	
-	public JavaExamples_run_mission(Genome nn){
-		gen = nn;
+	public MalmoMission(Genome gen) {
+		this.gen = gen;
 	}
-	
     static
     {
         System.loadLibrary("MalmoJava"); // attempts to load MalmoJava.dll (on Windows) or libMalmoJava.so (on Linux)
     }
 
-    public static void main(String argv[])
+    public void runMission()
     {
         AgentHost agent_host = new AgentHost();
-        try
-        {
-            StringVector args = new StringVector();
-            args.add("JavaExamples_run_mission");
-            for( String arg : argv )
-                args.add( arg );
-            agent_host.parse( args );
-        }
-        catch( Exception e )
-        {
-            System.err.println( "ERROR: " + e.getMessage() );
-            System.err.println( agent_host.getUsage() );
-            System.exit(1);
-        }
         if( agent_host.receivedArgument("help") )
         {
             System.out.println( agent_host.getUsage() );
@@ -96,109 +81,6 @@ public class JavaExamples_run_mission
         }
 
         WorldState world_state;
-
-        System.out.print( "Waiting for the mission to start" );
-        do {
-            System.out.print( "." );
-            try {
-                Thread.sleep(100);
-            } catch(InterruptedException ex) {
-                System.err.println( "User interrupted while waiting for mission to start." );
-                return;
-            }
-            world_state = agent_host.getWorldState();
-            for( int i = 0; i < world_state.getErrors().size(); i++ )
-                System.err.println( "Error: " + world_state.getErrors().get(i).getText() );
-        } while( !world_state.getIsMissionRunning() );
-        System.out.println( "" );
-
-        // main loop:
-        do {
-            agent_host.sendCommand( "move 1" );
-            agent_host.sendCommand( "turn " + Math.random() );
-            try {
-                Thread.sleep(500);
-            } catch(InterruptedException ex) {
-                System.err.println( "User interrupted while mission was running." );
-                return;
-            }
-            world_state = agent_host.getWorldState();
-            TimestampedVideoFrameVector troy = world_state.getVideoFrames();
-            TimestampedVideoFrame bob = troy.get((int) (troy.size()-1));
-            ByteVector hi = bob.getPixels();
-            System.out.print("Colors in the image" + hi.size());
-            System.out.println(" Red in first pixel = " + hi.get(0));
-            System.out.println(" Blue in first pixel = " + hi.get(1));
-            System.out.println(" Green in first pixel = " + hi.get(2));
-            System.out.print(" Frames that passed = " + world_state.getNumberOfVideoFramesSinceLastState());
-            System.out.print( " video,observations,rewards received: " );
-            System.out.print( world_state.getNumberOfVideoFramesSinceLastState() + "," );
-            System.out.print( world_state.getNumberOfObservationsSinceLastState() + "," );
-            System.out.println(world_state.getNumberOfRewardsSinceLastState());
-            for( int i = 0; i < world_state.getRewards().size(); i++ ) {
-                TimestampedReward reward = world_state.getRewards().get(i);
-                System.out.println( "Summed reward: " + reward.getValue() );
-            }
-            for( int i = 0; i < world_state.getErrors().size(); i++ ) {
-                TimestampedString error = world_state.getErrors().get(i);
-                System.err.println( "Error: " + error.getText() );
-            }
-        } while( world_state.getIsMissionRunning() );
-
-        System.out.println( "Mission has stopped." );
-    }
-    
-    public void runThrough(String argv[], Genome gens)
-    {
-        AgentHost agent_host = new AgentHost();
-        try
-        {
-            StringVector args = new StringVector();
-            args.add("JavaExamples_run_mission");
-            for( String arg : argv )
-                args.add( arg );
-            agent_host.parse( args );
-        }
-        catch( Exception e )
-        {
-            System.err.println( "ERROR: " + e.getMessage() );
-            System.err.println( agent_host.getUsage() );
-            System.exit(1);
-        }
-        if( agent_host.receivedArgument("help") )
-        {
-            System.out.println( agent_host.getUsage() );
-            System.exit(0);
-        }
-
-        MissionSpec my_mission = new MissionSpec();
-        my_mission.timeLimitInSeconds(10);
-        my_mission.requestVideo( 320, 240 );
-        my_mission.rewardForReachingPosition(19.5f,0.0f,19.5f,100.0f,1.1f);
-
-        MissionRecordSpec my_mission_record = new MissionRecordSpec("./saved_data.tgz");
-        my_mission_record.recordCommands();
-        my_mission_record.recordMP4(20, 400000);
-        my_mission_record.recordRewards();
-        my_mission_record.recordObservations();
-
-        try {
-            agent_host.startMission( my_mission, my_mission_record );
-        }
-        catch (MissionException e) {
-            System.err.println( "Error starting mission: " + e.getMessage() );
-            System.err.println( "Error code: " + e.getMissionErrorCode() );
-            // We can use the code to do specific error handling, eg:
-            if (e.getMissionErrorCode() == MissionException.MissionErrorCode.MISSION_INSUFFICIENT_CLIENTS_AVAILABLE)
-            {
-                // Caused by lack of available Minecraft clients.
-                System.err.println( "Is there a Minecraft client running?");
-            }
-            System.exit(1);
-        }
-
-        WorldState world_state;
-        gen = gens;
 
         System.out.print( "Waiting for the mission to start" );
         do {
@@ -229,13 +111,31 @@ public class JavaExamples_run_mission
             TimestampedVideoFrameVector troy = world_state.getVideoFrames();
             TimestampedVideoFrame bob = troy.get((int) (troy.size()-1));
             ByteVector hi = bob.getPixels();
-            runThroughNeuralNetwork(hi);
-            System.out.print("Colors in the image" + hi.size());
+            /*System.out.print("Colors in the image" + hi.size());
             System.out.println(" Red in first pixel = " + hi.get(0));
             System.out.println(" Blue in first pixel = " + hi.get(1));
             System.out.println(" Green in first pixel = " + hi.get(2));
             System.out.print(" Frames that passed = " + world_state.getNumberOfVideoFramesSinceLastState());
-            System.out.print( " video,observations,rewards received: " );
+            System.out.print( " video,observations,rewards received: " );*/
+            ArrayList<Float> commands = gen.runGenome(hi);
+            if(commands.get(0) > 0.5f) {
+            	agent_host.sendCommand("move 1");
+            }
+            else {
+            	agent_host.sendCommand("move 0");
+            }
+            if(commands.get(1) > 0.5f) {
+            	agent_host.sendCommand("turn 1");
+            }
+            else {
+            	agent_host.sendCommand("turn 0");
+            }
+            if(commands.get(2) > 0.5f) {
+            	agent_host.sendCommand("jump 1");
+            }
+            else {
+            	agent_host.sendCommand("jump 0");
+            }
             System.out.print( world_state.getNumberOfVideoFramesSinceLastState() + "," );
             System.out.print( world_state.getNumberOfObservationsSinceLastState() + "," );
             System.out.println(world_state.getNumberOfRewardsSinceLastState());
@@ -251,9 +151,6 @@ public class JavaExamples_run_mission
 
         System.out.println( "Mission has stopped." );
     }
-
-	private void runThroughNeuralNetwork(ByteVector hi) {
-		gen.runGenome(hi);
 		
-	}
 }
+
