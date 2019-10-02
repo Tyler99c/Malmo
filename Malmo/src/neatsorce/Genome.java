@@ -219,6 +219,7 @@ public class Genome {
         for(NodeGene gen: outputNodes.values()) {
         	outputs.add(gen.getSignal(inputs, connections, nodes));
         }
+        System.out.println("Outputs: " + outputs);
 		return outputs;
 	}
 

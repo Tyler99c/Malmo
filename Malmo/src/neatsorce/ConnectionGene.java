@@ -75,4 +75,8 @@ public class ConnectionGene {
 	public float sendThrough(ByteVector inputs, Map<Integer,ConnectionGene> connections, Map<Integer,NodeGene> nodes) {
 		return nodes.get(inNode).getSignal(inputs, connections, nodes) * weight;
 	}
+	
+	public float sendThrough(ArrayList<Float> inputs, Map<Integer,ConnectionGene> connections, Map<Integer,NodeGene> nodes) {
+		return nodes.get(inNode).getSignal(inputs, connections, nodes) * weight;
+	}
 }
