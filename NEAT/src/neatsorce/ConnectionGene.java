@@ -18,6 +18,13 @@ public class ConnectionGene {
 		expressed = exp;
 		innovation = inno;
 	}
+	public ConnectionGene(ConnectionGene connectionGene) {
+		inNode = connectionGene.getInNode();
+		outNode = connectionGene.getOutNode();
+		weight = connectionGene.getWeight();
+		expressed = connectionGene.getExpressed();
+		innovation = connectionGene.getInnovation();
+	}
 	/**
 	 * All the getters and setters for the variables above
 	 * @return

@@ -5,7 +5,6 @@ import java.util.Random;
 import neatsorce.ConnectionGene;
 import neatsorce.Genome;
 import neatsorce.InnovationGenerator;
-import neatsorce.Mutations;
 import neatsorce.NodeGene;
 import neatsorce.NodeGene.TYPE;
 
@@ -14,7 +13,10 @@ public class TestMutation {
 		parent1.addNodeMutation(new Random());
 		return parent1;
 	}
-	
+	public static Genome testAddNode(Genome parent1,InnovationGenerator i) {
+		parent1.addNodeMutation(new Random(),i);
+		return parent1;
+	}
 	public static Genome testAddNodeWithMutationCalls(Genome parent1) {
 		return parent1;
 	}
@@ -24,8 +26,8 @@ public class TestMutation {
 		return parent;
 	}
 
-	public static Genome testAddConnection(Genome parent) {
-		parent.addConnectionMutation(new Random());
+	public static Genome testAddConnection(Genome parent,InnovationGenerator i) {
+		parent.addConnectionMutation(new Random(),i);
 		return parent;
 	}
 }

@@ -17,6 +17,9 @@ public class NodeGene {
 		id = i;
 		type = t;
 	}
+	public NodeGene(NodeGene nodeGene) {
+		// TODO Auto-generated constructor stub
+	}
 	private TYPE type;
 	private int id;
 
