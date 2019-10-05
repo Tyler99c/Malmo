@@ -8,5 +8,6 @@
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="/home/engruser/Documents/Malmo/Malmo-0.37.0-Linux-Ubuntu-18.04-64bit_withBoost_Python3.6/Java_Examples/MalmoJavaJar.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
