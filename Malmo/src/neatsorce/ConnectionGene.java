@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.microsoft.msr.malmo.ByteVector;
-
 public class ConnectionGene {
 	private int inNode;
 	private int outNode;
@@ -19,6 +17,13 @@ public class ConnectionGene {
 		weight = wei;
 		expressed = exp;
 		innovation = inno;
+	}
+	public ConnectionGene(ConnectionGene connectionGene) {
+		inNode = connectionGene.getInNode();
+		outNode = connectionGene.getOutNode();
+		weight = connectionGene.getWeight();
+		expressed = connectionGene.getExpressed();
+		innovation = connectionGene.getInnovation();
 	}
 	/**
 	 * All the getters and setters for the variables above
@@ -70,10 +75,6 @@ public class ConnectionGene {
 	
 	public ConnectionGene copy() {
 		return new ConnectionGene(inNode, outNode, weight, expressed, innovation);
-	}
-	
-	public float sendThrough(ByteVector inputs, Map<Integer,ConnectionGene> connections, Map<Integer,NodeGene> nodes) {
-		return nodes.get(inNode).getSignal(inputs, connections, nodes) * weight;
 	}
 	
 	public float sendThrough(ArrayList<Float> inputs, Map<Integer,ConnectionGene> connections, Map<Integer,NodeGene> nodes) {

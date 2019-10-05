@@ -27,13 +27,13 @@ public abstract class AllGenomeHandler {
 	private Map<Genome, Float> scoreMap;
 	private List<Species> species;
 	private List<Genome> nextGenGenomes;
-	private Random random;
+	private Random random = new Random();
 	private float highestScore;
 	private Genome fittestGenome;
 	
 	private float MUTATION_RATE = .5f;
 	private float ADD_CONNECTION_RATE = .1f;
-	private float ADD_NODE_RATE = .01f;
+	private float ADD_NODE_RATE = .1f;
 	
 
 	public AllGenomeHandler(int populationSize, Genome startingGenome, InnovationGenerator nodeInnovation, InnovationGenerator connectionInnovation) {
@@ -46,6 +46,9 @@ public abstract class AllGenomeHandler {
 			genomes.add(new Genome(startingGenome));
 		}
 		nextGenGenomes = new ArrayList<Genome>(populationSize);
+		speciesMap = new HashMap<Genome, Species>();
+		scoreMap = new HashMap<Genome, Float>();
+		species = new ArrayList<Species>();
 		
 	}
 	
@@ -61,6 +64,8 @@ public abstract class AllGenomeHandler {
 		scoreMap.clear();
 		speciesMap.clear();
 		nextGenGenomes.clear();
+		fittestGenome = null;
+		highestScore = 0.0f;
 		
 		//Places genomes into species
 		for (Genome gen : genomes) {
@@ -117,6 +122,7 @@ public abstract class AllGenomeHandler {
 	
 	
 		//Breed the rest of the genomes
+		System.out.print(nextGenGenomes.size() + " " + populationSize);
 		while (nextGenGenomes.size() < populationSize) {
 			Species s = getRandomSpeciesBaisedAdjustedFitness(random);
 			Genome p1 = getRandomGenomeBiasedAdjustedFitness(s, random);
@@ -136,7 +142,7 @@ public abstract class AllGenomeHandler {
 				child.addConnectionMutation(random, connectionInnovation);
 			}
 			if(random.nextFloat() < ADD_NODE_RATE) {
-				child.addConnectionMutation(random, nodeInnovation);
+				child.addNodeMutation(random, connectionInnovation, nodeInnovation);
 			}
 			nextGenGenomes.add(child);
 		}

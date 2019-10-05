@@ -18,8 +18,10 @@ public class NodeGene {
 		type = t;
 	}
 	public NodeGene(NodeGene nodeGene) {
-		// TODO Auto-generated constructor stub
+		id = nodeGene.getId();
+		type = nodeGene.getType();
 	}
+	
 	private TYPE type;
 	private int id;
 

@@ -30,15 +30,16 @@ import java.util.List;
 import com.microsoft.msr.malmo.*;
 
 import neatsorce.Genome;
+import neatsorce.MyNeuralNetwork;
  
 
 public class MalmoMission
 {
-	private Genome gen;
+	private MyNeuralNetwork nn;
 	private int hi;
 	
-	public MalmoMission(Genome gen) {
-		this.gen = gen;
+	public MalmoMission(MyNeuralNetwork nn) {
+		this.nn = nn;
 	}
     static
     {
@@ -117,7 +118,7 @@ public class MalmoMission
             System.out.println(" Green in first pixel = " + hi.get(2));
             System.out.print(" Frames that passed = " + world_state.getNumberOfVideoFramesSinceLastState());
             System.out.print( " video,observations,rewards received: " );*/
-            ArrayList<Float> commands = gen.runGenome(hi);
+            ArrayList<Float> commands = nn.compute(hi);
             if(commands.get(0) > 0.5f) {
             	agent_host.sendCommand("move 1");
             }

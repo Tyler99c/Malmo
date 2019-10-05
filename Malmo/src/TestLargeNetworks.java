@@ -13,7 +13,7 @@ import neatsorce.NodeGene;
 import neatsorce.NodeGene.TYPE;
 import neatsorce.GenomePrinter;
 
-public class MalmoWithNeat {
+public class TestLargeNetworks {
 	public static void main(String[] args) {
 		InnovationGenerator innovation = new InnovationGenerator();
 		Random r = new Random();
