@@ -32,16 +32,12 @@ public class MyNeuralNetwork {
 			Neurons.put(node.getId(), new Neuron(node));
 		}
 		//Map all connections that connect to a neuron
-		for(Neuron net : Neurons.values()) {
 			int j = 0;
 			for(ConnectionGene con : gen.getConnectionGenes().values()) {
-				//Check every connection to find every connection where this is an outnode
-				if(con.getOutNode() == net.getNode().getId()) {
-					net.addInputs(con.getInnovation(),con);
-				}
+				int connected = con.getOutNode();
+				Neurons.get(connected).addInputs(con.getInnovation(), con);
 				System.out.println(j++);
 			}
-		}	
 	}
 	
 	public Neuron getNeuron(int id) {
@@ -59,6 +55,22 @@ public class MyNeuralNetwork {
 		//For every input nueron
         for(Integer outputNode: outputIds) {
         	outputs.add(Neurons.get(outputNode).sigmoid(Neurons, inputs));
+        }
+		return outputs;
+		
+	}
+	
+	/**
+	 * Test compute using floats
+	 * @param inputs
+	 * @return
+	 */
+	public List<Float> computeByte(List<ByteVector> inputs) {
+		ByteVector i = null;
+		ArrayList<Float> outputs = new ArrayList();
+		//For every input nueron
+        for(Integer outputNode: outputIds) {
+        	outputs.add(Neurons.get(outputNode).sigmoidByte(Neurons, inputs));
         }
 		return outputs;
 		
@@ -117,6 +129,23 @@ public class MyNeuralNetwork {
 			}
 			//TImes the entire thing by the sigmoid fucntion
 			return (float) (1/( 1 + Math.pow(Math.E,(-1*total))));
+		}
+		
+		public ByteVector sigmoidByte(Map<Integer, Neuron> neurons, List<ByteVector> inputs) {
+			//If it's input type return
+			if(type == NodeGene.TYPE.INPUT) {
+				return inputs.get(node.getId());
+			}
+			//If not for every connection to it mutlipley by the weight and ask for the node signal
+			float total = 0.0f;
+			for(ConnectionGene con : inputIds.values()) {
+				//Find every neuron attached to this neural network
+				total = total + con.getWeight() * neurons.get(con.getInNode()).sigmoid(neurons, inputs);
+				//Ask for the signal from that network it returns
+				//Multiply it by the wieght of the connection
+			}
+			//TImes the entire thing by the sigmoid fucntion
+			return (ByteVector) (1/( 1 + Math.pow(Math.E,(-1*total))));
 		}
 	}
 
