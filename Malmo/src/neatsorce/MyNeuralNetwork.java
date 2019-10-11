@@ -65,7 +65,7 @@ public class MyNeuralNetwork {
 	 * @param inputs
 	 * @return
 	 */
-	public List<Float> computeByte(List<ByteVector> inputs) {
+	public List<Float> computeByte(ByteVector inputs) {
 		ByteVector i = null;
 		ArrayList<Float> outputs = new ArrayList();
 		//For every input nueron
@@ -131,21 +131,21 @@ public class MyNeuralNetwork {
 			return (float) (1/( 1 + Math.pow(Math.E,(-1*total))));
 		}
 		
-		public ByteVector sigmoidByte(Map<Integer, Neuron> neurons, List<ByteVector> inputs) {
+		public Float sigmoidByte(Map<Integer, Neuron> neurons, ByteVector inputs) {
 			//If it's input type return
 			if(type == NodeGene.TYPE.INPUT) {
-				return inputs.get(node.getId());
+				return (float) inputs.get(node.getId());
 			}
 			//If not for every connection to it mutlipley by the weight and ask for the node signal
 			float total = 0.0f;
 			for(ConnectionGene con : inputIds.values()) {
 				//Find every neuron attached to this neural network
-				total = total + con.getWeight() * neurons.get(con.getInNode()).sigmoid(neurons, inputs);
+				total = total + con.getWeight() * neurons.get(con.getInNode()).sigmoidByte(neurons, inputs);
 				//Ask for the signal from that network it returns
 				//Multiply it by the wieght of the connection
 			}
 			//TImes the entire thing by the sigmoid fucntion
-			return (ByteVector) (1/( 1 + Math.pow(Math.E,(-1*total))));
+			return (float) (1/( 1 + Math.pow(Math.E,(-1*total))));
 		}
 	}
 

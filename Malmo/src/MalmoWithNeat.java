@@ -3,6 +3,8 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.json.JSONException;
+
 import com.microsoft.msr.malmo.ByteVector;
 
 import neatsorce.ConnectionGene;
@@ -14,7 +16,7 @@ import neatsorce.NodeGene.TYPE;
 import neatsorce.GenomePrinter;
 
 public class MalmoWithNeat {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws JSONException {
 		InnovationGenerator innovation = new InnovationGenerator();
 		Random r = new Random();
 		GenomePrinter print = new GenomePrinter();
@@ -40,20 +42,8 @@ public class MalmoWithNeat {
 		for(int i = 0; i < 230400; i++) {
 			inputs.add(1.0f);
 		}
-		long endTime = System.nanoTime();
-		double total = (endTime - startTime)/1000000;
-		System.out.println("Total time to construct a network" + total);
-		System.out.println("Lets go");
-		Toolkit.getDefaultToolkit().beep();
-		startTime = System.nanoTime();
-		List<Float> outputs = n.compute(inputs);
-		endTime = System.nanoTime();
-		total = (endTime - startTime)/ 1000000;
-		System.out.println("Total Time for first loop: " + total);
-		System.out.println("Outputs : " + outputs.get(0) +" "+ outputs.get(1) +" "+ outputs.get(2));
-		
-		//GenomePrinter.printGenome(parent1, "output/parent1.png");
-		//MalmoMission min = new MalmoMission(parent1);
-		//min.runMission();
+		MalmoMission min = new MalmoMission(n);
+		double d = min.runMission();
+		System.out.println(d);
 	}
 }

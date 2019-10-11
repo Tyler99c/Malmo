@@ -27,10 +27,14 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.microsoft.msr.malmo.*;
 
 import neatsorce.Genome;
 import neatsorce.MyNeuralNetwork;
+
  
 
 public class MalmoMission
@@ -46,7 +50,7 @@ public class MalmoMission
         System.loadLibrary("MalmoJava"); // attempts to load MalmoJava.dll (on Windows) or libMalmoJava.so (on Linux)
     }
 
-    public void runMission()
+    public double runMission() throws JSONException
     {
         AgentHost agent_host = new AgentHost();
         if( agent_host.receivedArgument("help") )
@@ -90,7 +94,7 @@ public class MalmoMission
                 Thread.sleep(100);
             } catch(InterruptedException ex) {
                 System.err.println( "User interrupted while waiting for mission to start." );
-                return;
+                return 0.0;
             }
             world_state = agent_host.getWorldState();
             for( int i = 0; i < world_state.getErrors().size(); i++ )
@@ -106,7 +110,7 @@ public class MalmoMission
                 Thread.sleep(500);
             } catch(InterruptedException ex) {
                 System.err.println( "User interrupted while mission was running." );
-                return;
+                return 0.0;
             }
             world_state = agent_host.getWorldState();
             TimestampedVideoFrameVector troy = world_state.getVideoFrames();
@@ -118,7 +122,7 @@ public class MalmoMission
             System.out.println(" Green in first pixel = " + hi.get(2));
             System.out.print(" Frames that passed = " + world_state.getNumberOfVideoFramesSinceLastState());
             System.out.print( " video,observations,rewards received: " );*/
-            ArrayList<Float> commands = nn.compute(hi);
+            List<Float> commands = nn.computeByte(hi);
             if(commands.get(0) > 0.5f) {
             	agent_host.sendCommand("move 1");
             }
@@ -151,6 +155,16 @@ public class MalmoMission
         } while( world_state.getIsMissionRunning() );
 
         System.out.println( "Mission has stopped." );
+        JSONObject root =  new JSONObject(world_state.getObservations().get(0).getText());
+
+        /*double life = root.getDouble("Life");
+
+        double xPos = root.getDouble("XPos");
+
+        double zPos = root.getDouble("ZPos");*/
+        
+        return root.getDouble("XPos");
+        //return 0.0;
     }
 		
 }
