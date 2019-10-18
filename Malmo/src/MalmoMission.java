@@ -60,6 +60,7 @@ public class MalmoMission
         }
 
         MissionSpec my_mission = new MissionSpec();
+        my_mission.forceWorldReset();
         my_mission.timeLimitInSeconds(10);
         my_mission.requestVideo( 320, 240 );
         my_mission.rewardForReachingPosition(19.5f,0.0f,19.5f,100.0f,1.1f);
@@ -71,6 +72,7 @@ public class MalmoMission
         my_mission_record.recordObservations();
 
         try {
+        	
             agent_host.startMission( my_mission, my_mission_record );
         }
         catch (MissionException e) {
@@ -86,7 +88,6 @@ public class MalmoMission
         }
 
         WorldState world_state;
-
         System.out.print( "Waiting for the mission to start" );
         do {
             System.out.print( "." );
@@ -141,9 +142,9 @@ public class MalmoMission
             else {
             	agent_host.sendCommand("jump 0");
             }
-            System.out.print( world_state.getNumberOfVideoFramesSinceLastState() + "," );
-            System.out.print( world_state.getNumberOfObservationsSinceLastState() + "," );
-            System.out.println(world_state.getNumberOfRewardsSinceLastState());
+            //System.out.print( world_state.getNumberOfVideoFramesSinceLastState() + "," );
+            //System.out.print( world_state.getNumberOfObservationsSinceLastState() + "," );
+            //System.out.println(world_state.getNumberOfRewardsSinceLastState());
             for( int i = 0; i < world_state.getRewards().size(); i++ ) {
                 TimestampedReward reward = world_state.getRewards().get(i);
                 System.out.println( "Summed reward: " + reward.getValue() );

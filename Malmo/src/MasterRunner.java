@@ -4,6 +4,8 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.json.JSONException;
+
 import neatsorce.AllGenomeHandler;
 import neatsorce.ConnectionGene;
 import neatsorce.Genome;
@@ -14,40 +16,37 @@ import neatsorce.NodeGene;
 import neatsorce.NodeGene.TYPE;
 
 public class MasterRunner {
-	public static void main(String[] args) {
-		InnovationGenerator innovation = new InnovationGenerator();
+	public static void main(String[] args) throws JSONException {
+		InnovationGenerator connInnovation = new InnovationGenerator();
+		InnovationGenerator nodeInnovation = new InnovationGenerator();
 		Random r = new Random();
 		GenomePrinter print = new GenomePrinter();
-		Genome parent1 = new Genome(innovation);
-		for(int i = 0; i < 230400; i++){
-			NodeGene node = new NodeGene(TYPE.INPUT, i);
+		Genome parent1 = new Genome();
+		for(int i = 0; i < 19200; i++){
+			NodeGene node = new NodeGene(TYPE.INPUT, nodeInnovation.getInnovation());
 			parent1.addNodeGene(node);
 		}
-		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, 230400));
-		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, 230401));
-		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, 230402));
-		for(int i = 0; i < 230400; i++){
-			parent1.addConnectionGene(new ConnectionGene(i,230400, r.nextFloat(),true,innovation.getInnovation()));
-			parent1.addConnectionGene(new ConnectionGene(i,230401, r.nextFloat(),true,innovation.getInnovation()));
-			parent1.addConnectionGene(new ConnectionGene(i,230402, r.nextFloat(),true,innovation.getInnovation()));
-			System.out.println(i);
+		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
+		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
+		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
+		for(int i = 0; i < 19200; i++){
+			parent1.addConnectionGene(new ConnectionGene(i,19200, r.nextFloat(),true,connInnovation.getInnovation()));
+			parent1.addConnectionGene(new ConnectionGene(i,19201, r.nextFloat(),true,connInnovation.getInnovation()));
+			parent1.addConnectionGene(new ConnectionGene(i,19202, r.nextFloat(),true,connInnovation.getInnovation()));
+			//System.out.println(i);
 		}
 		Toolkit.getDefaultToolkit().beep();
 
 		long startTime = System.nanoTime();
-		MyNeuralNetwork n = new MyNeuralNetwork(parent1);
+		//MyNeuralNetwork n = new MyNeuralNetwork(parent1);
 		
-		AllGenomeHandler eval = new AllGenomeHandler(100, genome, nodeInnovation, connectionInnovation) {
+		AllGenomeHandler eval = new AllGenomeHandler(100, parent1, nodeInnovation, connInnovation) {
 			@Override
-			public float evaluateGenome(Genome genome) {
-				float weightSum = 0f;
-				for(ConnectionGene cg : genome.getConnectionGenes().values()) {
-					if(cg.getExpressed()) {
-						weightSum += Math.abs(cg.getWeight());
-					}
-				}
-				float difference = Math.abs(weightSum-100f);
-				return (1000f/difference);
+			public float evaluateGenome(Genome genome) throws JSONException {
+				System.out.println("Running Test");
+				 MyNeuralNetwork n = new MyNeuralNetwork(genome);
+				 MalmoMission min = new MalmoMission(n);
+				 return (float)(1000 - min.runMission());
 			}
 		};
 		

@@ -15,7 +15,7 @@ public class Genome {
 	private Map<Integer, ConnectionGene> connections;
 	private Map<Integer, NodeGene> nodes;
 	private InnovationGenerator innovation;
-	private int rewards;
+	private int reward;
 	
 	public Genome() {
 		nodes = new HashMap<Integer, NodeGene>();
@@ -42,6 +42,13 @@ public class Genome {
 		}
 	}
 	
+	public int getReward() {
+		return reward;
+	}
+	
+	public void setReward(int i) {
+		reward = i;
+	}
 	
 	public void addNodeGene(NodeGene gene) {
 		nodes.put(gene.getId(),gene);
