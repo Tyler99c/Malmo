@@ -36,7 +36,6 @@ public class MyNeuralNetwork {
 			for(ConnectionGene con : gen.getConnectionGenes().values()) {
 				int connected = con.getOutNode();
 				Neurons.get(connected).addInputs(con.getInnovation(), con);
-				System.out.println(j++);
 			}
 	}
 	

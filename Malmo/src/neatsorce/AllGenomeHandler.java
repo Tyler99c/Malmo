@@ -1,5 +1,10 @@
 package neatsorce;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,7 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
+import org.json.JSONTokener;
+
+import jsontogenome.Converter;;
 
 public abstract class AllGenomeHandler {
 
@@ -31,13 +43,15 @@ public abstract class AllGenomeHandler {
 	private Random random = new Random();
 	private float highestScore;
 	private Genome fittestGenome;
+	private List<Integer> genomeTracker;
+	private JSONArray genomeList = new JSONArray();
 
 	private float MUTATION_RATE = .5f;
 	private float ADD_CONNECTION_RATE = .1f;
 	private float ADD_NODE_RATE = .1f;
 
 	public AllGenomeHandler(int populationSize, Genome startingGenome, InnovationGenerator nodeInnovation,
-			InnovationGenerator connectionInnovation) {
+			InnovationGenerator connectionInnovation) throws IOException, JSONException {
 		this.populationSize = populationSize;
 		this.nodeInnovation = nodeInnovation;
 		this.connectionInnovation = connectionInnovation;
@@ -45,8 +59,18 @@ public abstract class AllGenomeHandler {
 		genomes = new ArrayList<Genome>(populationSize);
 		for (int i = 0; i < populationSize; i++) {
 			System.out.println(i);
-			genomes.add(new Genome(startingGenome));
+			//genomes.add(new Genome(startingGenome));
+			Converter.constructGenomeFile(new Genome(startingGenome), i);
+			//Save each gnome as a JSON file
+			
 		}
+		try(FileWriter file = new FileWriter("Genomes.json")){
+			file.write(genomeList.toString());
+			file.flush();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 		System.out.println("Creates an array list of Genomes");
 		nextGenGenomes = new ArrayList<Genome>(populationSize);
 		speciesMap = new HashMap<Genome, Species>();
@@ -54,13 +78,38 @@ public abstract class AllGenomeHandler {
 		species = new ArrayList<Species>();
 		System.out.println("Done making Evaluater");
 	}
+	
+	
+	public void constructGenomeFile(Genome gen, int i) throws JSONException {
+		JSONObject genome = new JSONObject();
+		genome.put("id", i);
+		int q = 0;
+		/*for(NodeGene node: gen.getNodeGenes().values()) {
+			genome.put("node" + q, node);
+			q++;
+		}
+		for(ConnectionGene conn : gen.getConnectionGenes().values()) {
+			genome.put("connection" + q, conn);
+		}*/
+		//genome.put("nodes",gen.getNodeGenes());
+		//genome.put("connections", gen.getConnectionGenes());
+		genome.put("genome", gen);
+		JSONObject genomeObject = new JSONObject();
+		genomeObject.put("Genome", genome);
+		try(FileWriter file = new FileWriter("5%Networks/Genomes/Genomes" + i + ".json")){
+			file.write(genomeObject.toString());
+			file.flush();
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 
+	
 	/**
 	 * Runs a generation
-	 * 
-	 * @throws JSONException
+	 * @throws Exception 
 	 */
-	public void evaluate() throws JSONException {
+	public void evaluateOld() throws Exception {
 
 		// Finds and resets all speices
 		for (Species s : species) {
@@ -74,6 +123,7 @@ public abstract class AllGenomeHandler {
 
 		// Places genomes into species
 		for (Genome gen : genomes) {
+			//Load each genome from the json files
 			System.out.println("New Genome");
 			boolean foundSpecies = false;
 			for (Species s : species) {
@@ -91,7 +141,19 @@ public abstract class AllGenomeHandler {
 				speciesMap.put(gen, newSpecies);
 			}
 		}
+		
+		
+		
 
+		/*for (int i = 0; i < populationSize; i++) {
+		
+			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+i+".json");
+			
+			JSONObject jObj = new JSONObject(new JSONTokener(fr));
+			int value = jObj.getJSONObject("Genome").getInt("id");
+			System.out.println(value);
+		}*/
+		
 		// Remove species not used
 		Iterator<Species> iter = species.iterator();
 		while (iter.hasNext()) {
@@ -156,7 +218,116 @@ public abstract class AllGenomeHandler {
 		nextGenGenomes = new ArrayList<Genome>();
 	}
 
-	public abstract float evaluateGenome(Genome genome) throws JSONException;
+	/**
+	 * Runs a generation
+	 * @throws Exception 
+	 */
+	@SuppressWarnings("unchecked")
+	public void evaluate() throws Exception {
+		// Finds and resets all speices
+		for (Species s : species) {
+			s.reset(random);
+		}
+		scoreMap.clear();
+		speciesMap.clear();
+		nextGenGenomes.clear();
+		fittestGenome = null;
+		highestScore = 0.0f;
+
+		for (int i = 0; i < populationSize; i++) {
+		
+			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+i+".json");
+			
+			JSONObject jObj = new JSONObject(new JSONTokener(fr));
+			Genome gen = Converter.toGenome(jObj, i);
+			//Load each genome from the json files
+			boolean foundSpecies = false;
+			for (Species s : species) {
+				if (Genome.compatibiltyDistance(gen, s.mascot, C1, C2, C3) < DT) {
+					s.members.add(gen);
+					speciesMap.put(gen, s);
+					foundSpecies = true;
+					break;
+				}
+			}
+			// If the genome doesn't have a speices that if fit in makes one
+			if (foundSpecies == false) {
+				Species newSpecies = new Species(gen);
+				species.add(newSpecies);
+				speciesMap.put(gen, newSpecies);
+			}
+			// Remove species not used
+			Iterator<Species> iter = species.iterator();
+			while (iter.hasNext()) {
+				Species s = iter.next();
+				if (s.members.isEmpty()) {
+					iter.remove();
+				}
+			}
+		}	
+
+		// Evaluates Genome and Assign fitness
+		for (int i = 0; i < populationSize; i++) {
+			
+			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+i+".json");
+			
+			JSONObject jObj = new JSONObject(new JSONTokener(fr));
+			Genome g = Converter.toGenome(jObj, i);
+			Species s = speciesMap.get(g);
+
+			float score = evaluateGenome(g);
+			float adjustedScore = score / speciesMap.get(g).members.size();
+
+			s.addAdjustedFitness(adjustedScore);
+			s.fitnessPop.add(new FitnessGenome(g, adjustedScore));
+			scoreMap.put(g, adjustedScore);
+			if (score > highestScore) {
+				highestScore = score;
+				fittestGenome = g;
+			}
+
+		}
+
+		// Put best genome from each species into next gen
+		for (Species s : species) {
+			Collections.sort(s.fitnessPop, fitComp);
+			Collections.reverse(s.fitnessPop);
+			FitnessGenome fittestInSpecies = s.fitnessPop.get(0);
+			nextGenGenomes.add(fittestInSpecies.genome);
+		}
+
+		// Breed the rest of the genomes
+		System.out.print(nextGenGenomes.size() + " " + populationSize);
+		while (nextGenGenomes.size() < populationSize) {
+			Species s = getRandomSpeciesBaisedAdjustedFitness(random);
+			Genome p1 = getRandomGenomeBiasedAdjustedFitness(s, random);
+			Genome p2 = getRandomGenomeBiasedAdjustedFitness(s, random);
+
+			Genome child;
+			if (scoreMap.get(p1) >= scoreMap.get(p2)) {
+				child = Genome.crossover(p1, p2, random);
+			} else {
+				child = Genome.crossover(p2, p1, random);
+			}
+			// Runs through each random chance to add a mutation
+			if (random.nextFloat() < MUTATION_RATE) {
+				child.changeWeight(random);
+			}
+			if (random.nextFloat() < ADD_CONNECTION_RATE) {
+				child.addConnectionMutation(random, connectionInnovation);
+			}
+			if (random.nextFloat() < ADD_NODE_RATE) {
+				child.addNodeMutation(random, connectionInnovation, nodeInnovation);
+			}
+			nextGenGenomes.add(child);
+		}
+
+		genomes = nextGenGenomes;
+		nextGenGenomes = new ArrayList<Genome>();
+	}
+	
+	
+	public abstract float evaluateGenome(Genome genome) throws JSONException, FileNotFoundException, IOException, Exception;
 
 	/**
 	 * Selects a random genome from the species chosen, where genomes with a higher

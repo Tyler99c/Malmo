@@ -16,7 +16,7 @@ import neatsorce.NodeGene.TYPE;
 import neatsorce.GenomePrinter;
 
 public class MalmoWithNeat {
-	public static void main(String[] args) throws JSONException {
+	public static void main(String[] args) throws Exception {
 		InnovationGenerator innovation = new InnovationGenerator();
 		Random r = new Random();
 		GenomePrinter print = new GenomePrinter();

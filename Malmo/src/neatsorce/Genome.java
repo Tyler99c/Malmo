@@ -56,6 +56,14 @@ public class Genome {
 	public void addConnectionGene(ConnectionGene gene) {
 		connections.put(gene.getInnovation(),gene);
 	}
+	
+	public void setConnections(Map<Integer, ConnectionGene> conns) {
+		connections = conns;
+	}
+	
+	public void setNodeGene(Map<Integer, NodeGene> gene) {
+		nodes = gene;
+	}
 	public Map<Integer, ConnectionGene> getConnectionGenes(){
 		return connections;
 	}
