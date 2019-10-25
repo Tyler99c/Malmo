@@ -23,26 +23,28 @@ public class Converter {
 		JSONObject nodes = Jobj.getJSONObject("Genome").getJSONObject("nodes");
 		Iterator<?> nd = nodes.keys();
 		int g = 0;
-		while(nd.hasNext()) {
+		int limit = Jobj.getJSONObject("Genome").getJSONObject("nodes").getInt("ammount");
+		while(g < limit) {
 			JSONObject node = nodes.getJSONObject("node"+g);
 			int id = node.getInt("id");
 			TYPE t = null;
-			if(node.getInt("id") == 0) {
+			if(node.getInt("TYPE") == 0) {
 				t = TYPE.INPUT;
-			}else if (node.getInt("id") == 1) {
+			}else if (node.getInt("TYPE") == 1) {
 				t = TYPE.OUTPUT;
+				//System.out.println("Found an output node");
 			}else {
 				t = TYPE.HIDDEN;
 			}
 			NodeGene gene = new NodeGene(t, id);
 			gen.addNodeGene(gene);
 			g++;
-			nd.next();
 		}
+		//System.out.println(g);
 		JSONObject connections = Jobj.getJSONObject("Genome").getJSONObject("connections");
-		nd = connections.keys();
 		g = 0;
-		while(nd.hasNext()) {
+		limit = Jobj.getJSONObject("Genome").getJSONObject("connections").getInt("ammount");
+		while(g < limit) {
 			JSONObject connection = connections.getJSONObject("connection"+g);
 			int innode = connection.getInt("innode");
 			int outnode = connection.getInt("outnode");
@@ -53,8 +55,9 @@ public class Converter {
 			int innovation = connection.getInt("innovation");
 			ConnectionGene connect = new ConnectionGene(innode,outnode,weight,expressed,innovation);
 			gen.addConnectionGene(connect);
-			nd.next();
+			g++;
 		}
+		//System.out.println("Made the Genome");
 		return gen;
 	}
 	
@@ -71,7 +74,6 @@ public class Converter {
 			connection.put("expressed", con.getExpressed());
 			connection.put("innovation", con.getInnovation());
 			connections.put("connection" + g, connection);
-			//System.out.print("Connection:" +g);
 			g++;
 		}
 		genome.put("connections", connections);
@@ -92,7 +94,6 @@ public class Converter {
 			//System.out.print("Node:" + g);
 			g++;
 		}
-		//System.out.println();
 		genome.put("nodes", nodes);
 		genome.put("id", i);
 		genome.put("reward", 0);
@@ -105,5 +106,54 @@ public class Converter {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static JSONObject getConstructGenomeFile(Genome gen, int i) throws JSONException {
+		JSONObject genome = new JSONObject();
+		//Do Connections
+		JSONObject connections = new JSONObject();
+		int g = 0;
+		for(ConnectionGene con: gen.getConnectionGenes().values()) {
+			JSONObject connection = new JSONObject();
+			connection.put("innode", con.getInNode());
+			connection.put("outnode", con.getOutNode());
+			connection.put("weight", con.getWeight());
+			connection.put("expressed", con.getExpressed());
+			connection.put("innovation", con.getInnovation());
+			connections.put("connection" + g, connection);
+			//System.out.print("Connection:" +g);
+			g++;
+		}
+		connections.put("ammount", g);
+		genome.put("connections", connections);
+		//Do Nodes
+		g = 0;
+		JSONObject nodes = new JSONObject();
+		for(NodeGene node: gen.getNodeGenes().values()) {
+			JSONObject ng = new JSONObject();
+			ng.put("id", node.getId());
+			if(node.getType() == TYPE.INPUT) {
+				ng.put("TYPE", 0);
+			}else if(node.getType() == TYPE.OUTPUT) {
+				ng.put("TYPE", 1);
+				//System.out.println("Added and output node");
+			}else {
+				ng.put("TYPE", 2);
+			}
+			nodes.put("node"+ g, ng);
+			//System.out.print("Node:" + g);
+			g++;
+		}
+		nodes.put("ammount", g);
+		//System.out.println(g);
+		//System.out.println();
+		genome.put("nodes", nodes);
+		genome.put("id", i);
+		genome.put("reward", 0);
+		//Do connections
+		JSONObject genomeObject = new JSONObject();
+		genomeObject.put("Genome", genome);
+		//System.out.println("Genome made");
+		return genomeObject;
 	}
 }

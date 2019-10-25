@@ -24,6 +24,7 @@ import neatsorce.NodeGene.TYPE;
 
 public class MasterRunner {
 	public static void main(String[] args) throws Exception {
+		int genomeSize = 120 * 160 * 3;
 	    BufferedWriter out = new BufferedWriter(new FileWriter("5%Networks/File1.txt"));
 	    List<Long> rewards = new ArrayList<Long>();
 		InnovationGenerator connInnovation = new InnovationGenerator();
@@ -31,17 +32,17 @@ public class MasterRunner {
 		Random r = new Random();
 		GenomePrinter print = new GenomePrinter();
 		Genome parent1 = new Genome();
-		for(int i = 0; i < 203400; i++){
+		for(int i = 0; i < genomeSize; i++){
 			NodeGene node = new NodeGene(TYPE.INPUT, nodeInnovation.getInnovation());
 			parent1.addNodeGene(node);
 		}
 		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
 		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
 		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
-		for(int i = 0; i < 203400; i++){
-			parent1.addConnectionGene(new ConnectionGene(i,203400, r.nextFloat(),true,connInnovation.getInnovation()));
-			parent1.addConnectionGene(new ConnectionGene(i,203401, r.nextFloat(),true,connInnovation.getInnovation()));
-			parent1.addConnectionGene(new ConnectionGene(i,203402, r.nextFloat(),true,connInnovation.getInnovation()));
+		for(int i = 0; i < genomeSize; i++){
+			parent1.addConnectionGene(new ConnectionGene(i,genomeSize, r.nextFloat(),true,connInnovation.getInnovation()));
+			parent1.addConnectionGene(new ConnectionGene(i,genomeSize + 1, r.nextFloat(),true,connInnovation.getInnovation()));
+			parent1.addConnectionGene(new ConnectionGene(i,genomeSize + 2, r.nextFloat(),true,connInnovation.getInnovation()));
 			//System.out.println(i);
 		}
 		Toolkit.getDefaultToolkit().beep();
@@ -64,8 +65,9 @@ public class MasterRunner {
 		};
 		
 		for(int i = 0; i < 100; i++) {
-			out = new BufferedWriter(new FileWriter("5%Networks/File" + i + ".txt"));
+			//System.out.println("Hello");
 			eval.evaluate();
+			out = new BufferedWriter(new FileWriter("5%Networks/File" + i + ".txt"));
 			for(long l : rewards) {
 				out.write(l + "\n");
 			}

@@ -5,6 +5,10 @@
   <About>
     <Summary>A simple 10 second mission with a reward for reaching a location.</Summary>
   </About>
+  
+  <ModSettings>
+    <MsPerTick>10</MsPerTick>
+  </ModSettings>
 
   <ServerSection>
     <ServerInitialConditions>
@@ -17,51 +21,60 @@
     </ServerInitialConditions>
     <ServerHandlers>
       <FlatWorldGenerator generatorString="3;7,220*1,5*3,2;3;,biome_1"/>
-      <DrawingDecorator>
-          <DrawBlock type="planks" x="19" y="227" z="18"/>
-          <DrawBlock type="planks" x="19" y="227" z="20"/>
-          <DrawBlock type="planks" x="18" y="227" z="18"/>
-          <DrawBlock type="planks" x="18" y="227" z="20"/>
-          <DrawBlock type="planks" x="20" y="227" z="18"/>
-          <DrawBlock type="planks" x="20" y="227" z="19"/>
-          <DrawBlock type="planks" x="20" y="227" z="20"/>
+      <DrawingDecorator>        
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="-2" z2="-2"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="-1" z2="-1"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="0" z2="0"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="2" z2="2"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="3" z2="3"></DrawLine>
           
-          <DrawBlock type="planks" x="19" y="228" z="18"/>
-          <DrawBlock type="planks" x="19" y="228" z="20"/>
-          <DrawBlock type="planks" x="18" y="228" z="18"/>
-          <DrawBlock type="planks" x="18" y="228" z="20"/>
-          <DrawBlock type="planks" x="20" y="228" z="18"/>
-          <DrawBlock type="planks" x="20" y="228" z="19"/>
-          <DrawBlock type="planks" x="20" y="228" z="20"/>        
+          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="237" y2="237" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="238" y2="238" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="239" y2="239" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="240" y2="240" z1="-3" z2="3"></DrawLine>
           
-          <DrawBlock type="planks" x="19" y="229" z="18"/>
-          <DrawBlock type="planks" x="19" y="229" z="19"/>
-          <DrawBlock type="planks" x="19" y="229" z="20"/>
-          <DrawBlock type="planks" x="18" y="229" z="18"/>
-          <DrawBlock type="planks" x="18" y="229" z="19"/>
-          <DrawBlock type="planks" x="18" y="229" z="20"/>
-          <DrawBlock type="planks" x="20" y="229" z="18"/>
-          <DrawBlock type="planks" x="20" y="229" z="19"/>
-          <DrawBlock type="planks" x="20" y="229" z="20"/>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="237" y2="237" z1="3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="238" y2="238" z1="3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="239" y2="239" z1="3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="240" y2="240" z1="3" z2="3"></DrawLine>
           
-          <DrawBlock type="planks" x="19" y="230" z="19"/>
-      </DrawingDecorator>  
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="237" y2="237" z1="-3" z2="-3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="238" y2="238" z1="-3" z2="-3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="239" y2="239" z1="-3" z2="-3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="240" y2="240" z1="-3" z2="-3"></DrawLine>
+          
+          <DrawLine x1="3"  type="redstone_block" x2="4" y1="237" y2="237" z1="0" z2="0"></DrawLine>
+          <DrawLine x1="5"  type="redstone_block" x2="7" y1="237" y2="237" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="5"  type="redstone_block" x2="7" y1="238" y2="238" z1="1" z2="1"></DrawLine>
+          
+          <DrawLine x1="9"  type="redstone_block" x2="11" y1="237" y2="237" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="9"  type="redstone_block" x2="11" y1="238" y2="238" z1="1" z2="1"></DrawLine>
+          
+          <DrawLine x1="12" type="redstone_block" x2="12" y1="237" y2="237" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="12" type="redstone_block" x2="12" y1="238" y2="238" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="13" type="redstone_block" x2="13" y1="237" y2="237" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="13" type="redstone_block" x2="13" y1="238" y2="238" z1="-3" z2="3"></DrawLine>
+          
+          
+          </DrawingDecorator>  
+           
       <ServerQuitFromTimeUp description="" timeLimitMs="100000"/>
       <ServerQuitWhenAnyAgentFinishes/>
     </ServerHandlers>
   </ServerSection>
 
   <AgentSection mode="Survival">
-    <Name>Cristina</Name>
+    <Name>BotmanMcGee</Name>
     <AgentStart>
-      <Placement pitch="0" x="0.5" y="227.0" yaw="0" z="0.5"/>
+      <Placement pitch="40" x="0.5" y="238.0" yaw="-90" z="0.5"/>
     </AgentStart>
     <AgentHandlers>
       <ContinuousMovementCommands turnSpeedDegs="180"/>
       <ObservationFromFullStats/>
       <VideoProducer want_depth="false">
-        <Width>320</Width>
-        <Height>240</Height>
+        <Width>160</Width>
+        <Height>120</Height>
       </VideoProducer>
       <RewardForReachingPosition>
         <Marker oneshot="true" reward="100" tolerance="1.100000023841858" x="19.5" y="227" z="19.5"/>
@@ -70,6 +83,4 @@
         <Marker tolerance="1.100000023841858" x="19.5" y="227.0" z="19.5"/>
       </AgentQuitFromReachingPosition>
     </AgentHandlers>
-  </AgentSection>
-
-  </Mission>
+  </AgentSection></Mission>

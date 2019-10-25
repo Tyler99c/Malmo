@@ -70,14 +70,15 @@ public class MalmoMission {
 		}
 		String xml = loadXML();
 		MissionSpec my_mission = new MissionSpec(xml,true);
-		my_mission.forceWorldReset();
+		//my_mission.forceWorldReset();
 		my_mission.timeLimitInSeconds(10);
-		my_mission.requestVideo(320, 240);
+		//my_mission.requestVideo(320, 240);
+		my_mission.requestVideo(240, 180);
 		my_mission.rewardForReachingPosition(19.5f, 0.0f, 19.5f, 100.0f, 1.1f);
 
 		MissionRecordSpec my_mission_record = new MissionRecordSpec("./saved_data.tgz");
 		my_mission_record.recordCommands();
-		my_mission_record.recordMP4(20, 400000);
+		//my_mission_record.recordMP4(20, 400000);
 		my_mission_record.recordRewards();
 		my_mission_record.recordObservations();
 
@@ -97,9 +98,12 @@ public class MalmoMission {
 
 		WorldState world_state;
 		Double d = null;
-		System.out.print("Waiting for the mission to start");
+		int timesObserved = 0;
+		int missedObservations = 0;
+		String turn = null;
+		//System.out.print("Waiting for the mission to start");
 		do {
-			System.out.print(".");
+			//System.out.print(".");
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException ex) {
@@ -110,16 +114,14 @@ public class MalmoMission {
 			for (int i = 0; i < world_state.getErrors().size(); i++)
 				System.err.println("Error: " + world_state.getErrors().get(i).getText());
 		} while (!world_state.getIsMissionRunning());
-		System.out.println("");
+		//System.out.println("");
 
 		agent_host.sendCommand("Jump 1");
 		agent_host.sendCommand("Jump 0");
 		// main loop:
 		do {
-			// agent_host.sendCommand( "move 1" );
-			// agent_host.sendCommand( "turn " + Math.random() );
 			try {
-				Thread.sleep(500);
+				Thread.sleep(50);
 			} catch (InterruptedException ex) {
 				System.err.println("User interrupted while mission was running.");
 				return 0.0;
@@ -128,44 +130,29 @@ public class MalmoMission {
 			TimestampedVideoFrameVector troy = world_state.getVideoFrames();
 			try {
 				if (troy != null) {
-					// System.out.println(troy.size()-1);
-					/*
-					 * if(troy.get((int) (troy.size()-1)) == null) {
-					 * 
-					 * System.out.println("Reeeee"); }
-					 */
-					// TimestampedVideoFrame bob = troy.get((int) (troy.size()-1));
 					TimestampedVideoFrame bob = troy.get(0);
 					ByteVector hi = bob.getPixels();
-					/*
-					 * System.out.print("Colors in the image" + hi.size());
-					 * System.out.println(" Red in first pixel = " + hi.get(0));
-					 * System.out.println(" Blue in first pixel = " + hi.get(1));
-					 * System.out.println(" Green in first pixel = " + hi.get(2));
-					 * System.out.print(" Frames that passed = " +
-					 * world_state.getNumberOfVideoFramesSinceLastState()); System.out.print(
-					 * " video,observations,rewards received: " );
-					 */
 					List<Float> commands = nn.computeByte(hi);
 					if (commands.get(0) > 0.5f) {
 						agent_host.sendCommand("move 1");
 					} else {
 						agent_host.sendCommand("move 0");
 					}
-					if (commands.get(1) > 0.5f) {
+					double speed = commands.get(1) - 0.5;
+					speed = speed * 2;
+					turn = "turn " + speed;
+					/*if (commands.get(1) > 0.5f) {
 						agent_host.sendCommand("turn 1");
 					} else {
 						agent_host.sendCommand("turn 0");
-					}
+					}*/
+					agent_host.sendCommand(turn);
 					if (commands.get(2) > 0.5f) {
 						agent_host.sendCommand("jump 1");
 					} else {
 						agent_host.sendCommand("jump 0");
 					}
-					// System.out.print( world_state.getNumberOfVideoFramesSinceLastState() + "," );
-					// System.out.print( world_state.getNumberOfObservationsSinceLastState() + ","
-					// );
-					// System.out.println(world_state.getNumberOfRewardsSinceLastState());
+
 					for (int i = 0; i < world_state.getRewards().size(); i++) {
 						TimestampedReward reward = world_state.getRewards().get(i);
 						System.out.println("Summed reward: " + reward.getValue());
@@ -177,14 +164,22 @@ public class MalmoMission {
 
 					JSONObject root = new JSONObject(world_state.getObservations().get(0).getText());
 					d = root.getDouble("XPos");
+					//System.out.println("Observation aquired");
+					timesObserved++;
 				}
 			} catch (Exception ob) {
-				ob.printStackTrace();
+				//System.out.println("No observation");
+				missedObservations++;
+				timesObserved++;
 			}
 
 		} while (world_state.getIsMissionRunning());
 
-		System.out.println("Mission has stopped.");
+		//System.out.println("Mission has stopped.");
+		double percentage;
+		percentage = missedObservations/timesObserved;
+		System.out.println("Observations: " + timesObserved);
+		System.out.println("Miss Chance:" + percentage);
 		return d;
 
 	}
