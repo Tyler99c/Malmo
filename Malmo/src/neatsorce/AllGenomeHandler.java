@@ -36,30 +36,17 @@ public abstract class AllGenomeHandler {
 	private InnovationGenerator nodeInnovation;
 	private InnovationGenerator connectionInnovation;
 	private int populationSize;
-	private List<Genome> genomes;
-	//Keeps track of what species a genome is in
-	private Map<Genome, Species> speciesMap;
+	private int integerFittestGenome;
 	//Like above by uses ints, first 
 	private Map<Integer, Species> intSpeciesMap;
-	
-	private Map<Genome, Float> scoreMap;
 	private Map<Integer, Float> intScoreMap;
-	
 	private List<Species> species;
-	
-	private List<Genome> nextGenGenomes;
 	private List<Integer> intNextGenGenomes;
-	
-	private List<Float> scoreKeeper;
+	private Map<Integer,Float> scoreKeeper;
 	private List<Float> adjustedScoreKeeper;
-	
 	private Random random = new Random();
 	private float highestScore;
 	private Genome fittestGenome;
-	private List<Integer> genomeTracker;
-	private JSONArray genomeList = new JSONArray();
-	private Map<Integer, Float> genomeRecords = new HashMap();
-	
 	private float MUTATION_RATE = .05f;
 	private float ADD_CONNECTION_RATE = .05f;
 	private float ADD_NODE_RATE = .05f;
@@ -70,7 +57,7 @@ public abstract class AllGenomeHandler {
 		this.nodeInnovation = nodeInnovation;
 		this.connectionInnovation = connectionInnovation;
 		// Adds all Genomes into the array list
-		genomes = new ArrayList<Genome>(populationSize);
+		long startTime = System.nanoTime();
 		for (int i = 0; i < populationSize; i++) {
 			System.out.println(i);
 			JSONObject genomeObject = Converter.getConstructGenomeFile(new Genome(startingGenome), i);
@@ -84,12 +71,15 @@ public abstract class AllGenomeHandler {
 			//Converter.constructGenomeFile(new Genome(startingGenome), i);
 			
 		}
+		long stopTime = System.nanoTime();
+		double timed = (stopTime - startTime)/1000000000;
+		System.out.println("Took " + timed + "Secounds to make all genomes");
 		//System.out.println("Creates an array list of Genomes");
 		intNextGenGenomes = new ArrayList<Integer>();
 		intSpeciesMap = new HashMap<Integer, Species>();
 		intScoreMap = new HashMap<Integer, Float>();
 		species = new ArrayList<Species>();
-		scoreKeeper = new HashMap<Float,Integer>();
+		scoreKeeper = new HashMap<Integer,Float>();
 		adjustedScoreKeeper = new ArrayList<Float>();
 		//System.out.println("Done making Evaluater");
 	}
@@ -108,197 +98,7 @@ public abstract class AllGenomeHandler {
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * Runs a generation
-	 * @throws Exception 
-	 */
-	@SuppressWarnings("unchecked")
-	public void evaluateOld() throws Exception {
-		
-		// Finds and resets all speices
-		for (Species s : species) {
-			s.reset(random);
-		}
-		intScoreMap.clear();
-		intSpeciesMap.clear();
-		intNextGenGenomes.clear();
-		fittestGenome = null;
-		highestScore = 0.0f;
-
-		//For each genome
-		int q = 0;
-		for (int i = 0; i < populationSize; i++) {
-			//Gen the genome in question
-			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+i+".json");
-			JSONObject jObj = new JSONObject(new JSONTokener(fr));
-			fr.close();
-			Genome gen = Converter.toGenome(jObj, i);
-			
-			//Load each genome from the json files
-			boolean foundSpecies = false;
-			//For each species
-			System.out.println("Finding a species for Genome: " + q++);
-			for (Species s : species) {
-				//System.out.println("Checking a species");
-				//Find the number of the genome that's the rep
-				int rep = s.rep;
-				//Retreive the json file
-				fr = new FileReader("5%Networks/Genomes/Genomes"+rep+".json");
-				//Get an object from a file
-				JSONObject speciesRep = new JSONObject(new JSONTokener(fr));
-				//Create a genome from the file
-				Genome genomeRep = Converter.toGenome(jObj, i);
-				//Compare the genomes
-				if (Genome.compatibiltyDistance(gen, genomeRep, C1, C2, C3) < DT) {
-					s.members.put(jObj.getJSONObject("Genome").getInt("id"),0);
-					//Add a species to the species map
-					intSpeciesMap.put(jObj.getJSONObject("Genome").getInt("id"),s);
-					foundSpecies = true;
-					break;
-				}
-			}
-			
-			// If the genome doesn't have a speices that if fit in makes one
-			if (foundSpecies == false) {
-				//System.out.println("Creating a new species");
-				Species newSpecies = new Species(jObj.getJSONObject("Genome").getInt("id"),0);
-				species.add(newSpecies);
-				intSpeciesMap.put(jObj.getJSONObject("Genome").getInt("id"), newSpecies);
-			}
-			
-			// Remove species not used
-			Iterator<Species> iter = species.iterator();
-			while (iter.hasNext()) {
-				Species s = iter.next();
-				if (s.members.isEmpty()) {
-					iter.remove();
-				}
-			}
-		}	
-
-		// Evaluates Genome and Assign fitness
-		for (int i = 0; i < populationSize; i++) {
-			System.out.println("Time to check Genome:" + i);
-			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+i+".json");
-			
-			JSONObject jObj = new JSONObject(new JSONTokener(fr));
-			//fr.close();
-			Genome g = Converter.toGenome(jObj, i);
-			
-			//Get the scpesices of the genome
-			Species s = intSpeciesMap.get(jObj.getJSONObject("Genome").getInt("id"));
-			int id = jObj.getJSONObject("Genome").getInt("id");
-
-			float score = evaluateGenome(g);
-			//Finds the score by dividing the score by the number of members in the species
-			//System.out.println("Making adjusted score");
-			float adjustedScore = score / intSpeciesMap.get(id).members.size();
-			//Holds all the records of genomes and how they performed
-			//System.out.println("Adding to genomeRecords");
-			genomeRecords.put(id, adjustedScore);
-			
-			//Updates a species adjustedfitness
-			s.addAdjustedFitness(adjustedScore);
-			
-			//Adds a fitness genome to a species
-			s.fitnessInt.add(new integerFitnessGenome(id,adjustedScore));
-			intScoreMap.put(id, adjustedScore);
-			if (score > highestScore) {
-				highestScore = score;
-				fittestGenome = g;
-			}
-
-		}
-		
-		
-
-		int newGeneration = 0;
-		// Put best genome from each species into next gen
-		//System.out.println("Search all species");
-		for (Species s : species) {
-			Collections.sort(s.fitnessInt, intComp);
-			Collections.reverse(s.fitnessInt);
-			integerFitnessGenome fitIntSpecies = s.fitnessInt.get(0);
-			//Grab the id of the fittest genomes and add it to the
-			intNextGenGenomes.add(fitIntSpecies.id);
-			
-			
-			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+newGeneration+".json");
-			
-			JSONObject jObj = new JSONObject(new JSONTokener(fr));
-			//fr.close();
-			Genome g = Converter.toGenome(jObj, newGeneration);
-			
-			//write genome to file, wth a new id
-			JSONObject genomeObject = Converter.getConstructGenomeFile(g, newGeneration);
-			try(FileWriter file = new FileWriter("5%Networks/Genomes/NewGenomes" + newGeneration + ".json")){
-				file.write(genomeObject.toString());
-				file.flush();
-				file.close();
-			}catch(IOException e) {
-				e.printStackTrace();
-			}
-			newGeneration++;
-		}
-
-		// Breed the rest of the genomes
-		//System.out.println(intNextGenGenomes.size() + " " + populationSize);
-		while (newGeneration < populationSize) {
-			System.out.println("Adding all genome: " + newGeneration + "to next gen");
-			Species s = getRandomSpeciesBaisedAdjustedFitness(random);
-			int idp1 = intGetRandomGenomeBiasedAdjustedFitness(s, random);
-			int idp2 = intGetRandomGenomeBiasedAdjustedFitness(s, random);
-
-			
-			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+idp1+".json");
-			JSONObject jObjp1 = new JSONObject(new JSONTokener(fr));
-			
-			fr = new FileReader("5%Networks/Genomes/Genomes"+idp2+".json");
-			JSONObject jObjp2 = new JSONObject(new JSONTokener(fr));
-			
-			Genome p1 = Converter.toGenome(jObjp1, idp1);
-			Genome p2 = Converter.toGenome(jObjp2, idp2);
-			Genome child;
-			fr.close();
-			
-			if (intScoreMap.get(idp1) >= intScoreMap.get(idp2)) {
-				child = Genome.crossover(p1, p2, random);
-			} else {
-				child = Genome.crossover(p2, p1, random);
-			}
-			// Runs through each random chance to add a mutation
-			if (random.nextFloat() < MUTATION_RATE) {
-				child.changeWeight(random);
-			}
-			if (random.nextFloat() < ADD_CONNECTION_RATE) {
-				child.addConnectionMutation(random, connectionInnovation);
-			}
-			if (random.nextFloat() < ADD_NODE_RATE) {
-				child.addNodeMutation(random, connectionInnovation, nodeInnovation);
-			}
-			//nextGenGenomes.add(child);
-			JSONObject genomeObject = Converter.getConstructGenomeFile(child, newGeneration);
-			try(FileWriter file = new FileWriter("5%Networks/Genomes/NewGenomes" + newGeneration + ".json")){
-				file.write(genomeObject.toString());
-				file.flush();
-				file.close();
-			}catch(IOException e) {
-				e.printStackTrace();
-			}
-			newGeneration++;
-			
-		}
-		//System.out.println("Converting all genomes to next gen");
-		for(int i = 0; i < populationSize; i++) {
-			File f1 = new File("5%Networks/Genomes/Genomes" + i + ".json");
-			f1.delete();
-			File f2 = new File("5%Networks/Genomes/NewGenomes" + i + ".json");
-			f2.renameTo(f1);
-		}
-	}
-	
+	}	
 	
 	/**
 	 * Runs a generation
@@ -314,13 +114,14 @@ public abstract class AllGenomeHandler {
 		intScoreMap.clear();
 		intSpeciesMap.clear();
 		intNextGenGenomes.clear();
-		fittestGenome = null;
+		integerFittestGenome = 0;
 		highestScore = 0.0f;
 		scoreKeeper.clear();
 		adjustedScoreKeeper.clear();
 
 		//For each genome
 		int q = 0;
+		long startTime = System.nanoTime();
 		for (int i = 0; i < populationSize; i++) {
 			//Gen the genome in question
 			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+i+".json");
@@ -333,6 +134,8 @@ public abstract class AllGenomeHandler {
 
 			float score = evaluateGenome(gen);
 				
+			scoreKeeper.put(jObj.getJSONObject("Genome").getInt("id"),score);
+			
 			boolean foundSpecies = false;
 			//For each species
 			System.out.println("Finding a species for Genome: " + q++);
@@ -373,41 +176,22 @@ public abstract class AllGenomeHandler {
 				}
 			}
 		}	
+		long stopTime = System.nanoTime();
+		double timed = (stopTime - startTime) / 1000000000; 
+		System.out.println("Took " + timed + "Secounds to evaluate and speciate");
 
-		// Evaluates Genome and Assign fitness
-		for (int i = 0; i < populationSize; i++) {
-			System.out.println("Time to check Genome:" + i);
-			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+i+".json");
-			
-			JSONObject jObj = new JSONObject(new JSONTokener(fr));
-			//fr.close();
-			Genome g = Converter.toGenome(jObj, i);
-			
-			//Get the scpesices of the genome
-			Species s = intSpeciesMap.get(jObj.getJSONObject("Genome").getInt("id"));
-			for(int i = 0; i < scoreKeeper.size(); i++) {
-				adjustedScoreKeeper.add(scoreKeeper.get(i)/intSpeciesMap.get(id).members.size());
-			}
-			//Finds the score by dividing the score by the number of members in the species
-			//System.out.println("Making adjusted score");
-			float adjustedScore = score / intSpeciesMap.get(id).members.size();
-			//Holds all the records of genomes and how they performed
-			//System.out.println("Adding to genomeRecords");
-			genomeRecords.put(id, adjustedScore);
-			
-			//Updates a species adjustedfitness
+		int cough = 0;
+		for(Float f : scoreKeeper.values()) {
+			float adjustedScore = f/intSpeciesMap.get(cough).members.size();
+			Species s = intSpeciesMap.get(cough);
 			s.addAdjustedFitness(adjustedScore);
-			
-			//Adds a fitness genome to a species
-			s.fitnessInt.add(new integerFitnessGenome(id,adjustedScore));
-			intScoreMap.put(id, adjustedScore);
-			if (score > highestScore) {
-				highestScore = score;
-				fittestGenome = g;
+			s.fitnessInt.add(new integerFitnessGenome(cough,adjustedScore));
+			intScoreMap.put(cough, adjustedScore);
+			if(f > highestScore) {
+				highestScore = f;
+				integerFittestGenome = cough;
 			}
-
-		}
-		
+		}		
 		
 
 		int newGeneration = 0;
@@ -441,8 +225,9 @@ public abstract class AllGenomeHandler {
 
 		// Breed the rest of the genomes
 		//System.out.println(intNextGenGenomes.size() + " " + populationSize);
+		startTime = System.nanoTime();
 		while (newGeneration < populationSize) {
-			System.out.println("Adding all genome: " + newGeneration + "to next gen");
+			System.out.println("Adding all genome: " + newGeneration + " to next gen");
 			Species s = getRandomSpeciesBaisedAdjustedFitness(random);
 			int idp1 = intGetRandomGenomeBiasedAdjustedFitness(s, random);
 			int idp2 = intGetRandomGenomeBiasedAdjustedFitness(s, random);
@@ -486,6 +271,9 @@ public abstract class AllGenomeHandler {
 			newGeneration++;
 			
 		}
+		stopTime = System.nanoTime();
+		timed = stopTime - startTime/1000000000;
+		System.out.println("Took " + timed + "Secounds to make the new generation");
 		//System.out.println("Converting all genomes to next gen");
 		for(int i = 0; i < populationSize; i++) {
 			File f1 = new File("5%Networks/Genomes/Genomes" + i + ".json");
@@ -540,6 +328,7 @@ public abstract class AllGenomeHandler {
 		for (Species s : species) {
 			countWeight += s.totalAdjustedFitness;
 			if (countWeight >= r) {
+				System.out.println("Hello");
 				return s;
 			}
 		}
@@ -568,8 +357,8 @@ public abstract class AllGenomeHandler {
 	 * Returns the fittestGenome;
 	 *
 	 */
-	public Genome getFittestGenome() {
-		return fittestGenome;
+	public int getFittestGenome() {
+		return integerFittestGenome;
 	}
 
 	/**

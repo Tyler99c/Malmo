@@ -7,7 +7,7 @@
   </About>
   
   <ModSettings>
-    <MsPerTick>10</MsPerTick>
+    <MsPerTick>5</MsPerTick>
   </ModSettings>
 
   <ServerSection>
@@ -73,8 +73,8 @@
       <ContinuousMovementCommands turnSpeedDegs="180"/>
       <ObservationFromFullStats/>
       <VideoProducer want_depth="false">
-        <Width>160</Width>
-        <Height>120</Height>
+        <Width>80</Width>
+        <Height>60</Height>
       </VideoProducer>
       <RewardForReachingPosition>
         <Marker oneshot="true" reward="100" tolerance="1.100000023841858" x="19.5" y="227" z="19.5"/>

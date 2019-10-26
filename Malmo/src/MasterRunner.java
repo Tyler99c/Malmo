@@ -24,7 +24,7 @@ import neatsorce.NodeGene.TYPE;
 
 public class MasterRunner {
 	public static void main(String[] args) throws Exception {
-		int genomeSize = 120 * 160 * 3;
+		int genomeSize = 60 * 80 * 3;
 	    BufferedWriter out = new BufferedWriter(new FileWriter("5%Networks/File1.txt"));
 	    List<Long> rewards = new ArrayList<Long>();
 		InnovationGenerator connInnovation = new InnovationGenerator();
@@ -76,18 +76,18 @@ public class MasterRunner {
 			long l = (long) eval.getHighestFitness();
 			out.write("Highest Fitness: "+ l + "\n");
 			System.out.print("\tAmount of species: " + eval.getSpeciesAmount());
-			System.out.print("\tConnections in best performer: " + eval.getFittestGenome().getConnectionGenes().values().size());
+			System.out.print("\tConnections in best performer: " + eval.getFittestGenome());
 			out.close();
-			float weightSum = 0;
+			/*float weightSum = 0;
 			for (ConnectionGene cg : eval.getFittestGenome().getConnectionGenes().values()) {
 				if(cg.getExpressed()) {
 					weightSum += Math.abs(cg.getWeight());
 				}
 			}
-			System.out.println("\t Weight sum:" + weightSum);
-			if (i % 10 == 0){
+			System.out.println("\t Weight sum:" + weightSum);*/
+			/*if (i % 10 == 0){
 				GenomePrinter.printGenome(eval.getFittestGenome(), "output/connection_sum_100" + i +".png");
-			}
+			}*/
 		}
 		
 	}

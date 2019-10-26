@@ -121,7 +121,7 @@ public class MalmoMission {
 		// main loop:
 		do {
 			try {
-				Thread.sleep(50);
+				Thread.sleep(25);
 			} catch (InterruptedException ex) {
 				System.err.println("User interrupted while mission was running.");
 				return 0.0;
