@@ -70,6 +70,7 @@ public class MalmoMission {
 		}
 		String xml = loadXML();
 		MissionSpec my_mission = new MissionSpec(xml,true);
+		System.out.println("Checkpoint 1");
 		//my_mission.forceWorldReset();
 		my_mission.timeLimitInSeconds(10);
 		//my_mission.requestVideo(320, 240);
@@ -83,7 +84,6 @@ public class MalmoMission {
 		my_mission_record.recordObservations();
 
 		try {
-
 			agent_host.startMission(my_mission, my_mission_record);
 		} catch (MissionException e) {
 			System.err.println("Error starting mission: " + e.getMessage());
@@ -97,10 +97,18 @@ public class MalmoMission {
 		}
 
 		WorldState world_state;
-		Double d = null;
+		double d = 0.0;
+		double life = 20.0;
+		boolean alive = false;
 		int timesObserved = 0;
 		int missedObservations = 0;
 		String turn = null;
+		int time = 0;
+		boolean goalReached = false;
+		long endTime = 0;
+		double totalTime = 1500;
+		long startTime = System.nanoTime();
+		
 		//System.out.print("Waiting for the mission to start");
 		do {
 			//System.out.print(".");
@@ -141,11 +149,6 @@ public class MalmoMission {
 					double speed = commands.get(1) - 0.5;
 					speed = speed * 2;
 					turn = "turn " + speed;
-					/*if (commands.get(1) > 0.5f) {
-						agent_host.sendCommand("turn 1");
-					} else {
-						agent_host.sendCommand("turn 0");
-					}*/
 					agent_host.sendCommand(turn);
 					if (commands.get(2) > 0.5f) {
 						agent_host.sendCommand("jump 1");
@@ -164,11 +167,23 @@ public class MalmoMission {
 
 					JSONObject root = new JSONObject(world_state.getObservations().get(0).getText());
 					d = root.getDouble("XPos");
-					//System.out.println("Observation aquired");
+					if(d > 20) {
+						goalReached = true;
+						endTime = System.nanoTime();
+					}else if(d > 12) {
+						while(root.getDouble("Pitch") < 20) {
+							agent_host.sendCommand("pitch -1");
+						}
+					}
+					if(root.getDouble("Life") < life) {
+						life = root.getDouble("Life");
+					}
+					if(root.getBoolean("IsAlive") == false) {
+						alive = false;
+					}
 					timesObserved++;
 				}
 			} catch (Exception ob) {
-				//System.out.println("No observation");
 				missedObservations++;
 				timesObserved++;
 			}
@@ -176,11 +191,24 @@ public class MalmoMission {
 		} while (world_state.getIsMissionRunning());
 
 		//System.out.println("Mission has stopped.");
+		if(goalReached == true) {
+			totalTime = endTime - startTime;
+			totalTime = (totalTime * 4)/1000000;
+		}
 		double percentage;
 		percentage = missedObservations/timesObserved;
 		System.out.println("Observations: " + timesObserved);
 		System.out.println("Miss Chance:" + percentage);
-		return d;
+		if(alive == false) {
+			if(goalReached == true) {
+				return d + (1500.0 -totalTime) - ((20.0 - life) * 100) + 2000;
+			}
+			return d + 500 - ((20.0 - life) * 100) + 2000;
+		}
+		if(goalReached == true) {
+			return d + (1500.0 - totalTime) + 2000 - ((20.0-life) * 100) + 2000;
+		}
+		return d + 1500.0 - ((20.0 - life) * 100) + 2000;
 
 	}
 

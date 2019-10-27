@@ -56,7 +56,7 @@ public class MasterRunner {
 				System.out.println("Running Test");
 				 MyNeuralNetwork n = new MyNeuralNetwork(genome);
 				 MalmoMission min = new MalmoMission(n);
-				float f = (1000.0f - (float)min.runMission());
+				float f = (float)min.runMission();
 				System.out.println(f);
 				long printable = (long)f;
 				rewards.add(printable);

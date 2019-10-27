@@ -2,9 +2,13 @@ package neatsorce;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,6 +54,7 @@ public abstract class AllGenomeHandler {
 	private float MUTATION_RATE = .05f;
 	private float ADD_CONNECTION_RATE = .05f;
 	private float ADD_NODE_RATE = .05f;
+	private int generation;
 
 	public AllGenomeHandler(int populationSize, Genome startingGenome, InnovationGenerator nodeInnovation,
 			InnovationGenerator connectionInnovation) throws IOException, JSONException {
@@ -82,6 +87,7 @@ public abstract class AllGenomeHandler {
 		scoreKeeper = new HashMap<Integer,Float>();
 		adjustedScoreKeeper = new ArrayList<Float>();
 		//System.out.println("Done making Evaluater");
+		generation = 0;
 	}
 	
 	
@@ -148,7 +154,7 @@ public abstract class AllGenomeHandler {
 				//Get an object from a file
 				JSONObject speciesRep = new JSONObject(new JSONTokener(fr));
 				//Create a genome from the file
-				Genome genomeRep = Converter.toGenome(jObj, i);
+				Genome genomeRep = Converter.toGenome(speciesRep, i);
 				//Compare the genomes
 				if (Genome.compatibiltyDistance(gen, genomeRep, C1, C2, C3) < DT) {
 					s.members.put(jObj.getJSONObject("Genome").getInt("id"),0);
@@ -191,7 +197,25 @@ public abstract class AllGenomeHandler {
 				highestScore = f;
 				integerFittestGenome = cough;
 			}
-		}		
+		}	
+		
+
+		if(1 == 1) {
+		
+			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+integerFittestGenome+".json");
+		
+			JSONObject jObj = new JSONObject(new JSONTokener(fr));
+			fr.close();
+			try(FileWriter file = new FileWriter("5%Networks/FittestGenomes/Generation" + generation + ".json")){
+				file.write(jObj.toString());
+				file.flush();
+				file.close();
+			}catch(IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//JSONObject jObj = new JSONObject(new JSONTokener(fr));
 		
 
 		int newGeneration = 0;
@@ -208,7 +232,7 @@ public abstract class AllGenomeHandler {
 			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+newGeneration+".json");
 			
 			JSONObject jObj = new JSONObject(new JSONTokener(fr));
-			//fr.close();
+			fr.close();
 			Genome g = Converter.toGenome(jObj, newGeneration);
 			
 			//write genome to file, wth a new id
@@ -281,6 +305,7 @@ public abstract class AllGenomeHandler {
 			File f2 = new File("5%Networks/Genomes/NewGenomes" + i + ".json");
 			f2.renameTo(f1);
 		}
+		generation++;
 	}
 	
 	
@@ -328,7 +353,6 @@ public abstract class AllGenomeHandler {
 		for (Species s : species) {
 			countWeight += s.totalAdjustedFitness;
 			if (countWeight >= r) {
-				System.out.println("Hello");
 				return s;
 			}
 		}

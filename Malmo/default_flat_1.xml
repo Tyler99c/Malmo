@@ -21,41 +21,64 @@
     </ServerInitialConditions>
     <ServerHandlers>
       <FlatWorldGenerator generatorString="3;7,220*1,5*3,2;3;,biome_1"/>
-      <DrawingDecorator>        
-          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="-2" z2="-2"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="-1" z2="-1"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="0" z2="0"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="1" z2="1"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="2" z2="2"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="13" y1="236" y2="236" z1="3" z2="3"></DrawLine>
+      <DrawingDecorator>      
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="247" y2="247" z1="-2" z2="-2"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="247" y2="247" z1="-1" z2="-1"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="247" y2="247" z1="0" z2="0"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="247" y2="247" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="247" y2="247" z1="2" z2="2"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="247" y2="247" z1="3" z2="3"></DrawLine>
+         
+          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="248" y2="248" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="249" y2="249" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="250" y2="250" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="251" y2="251" z1="-3" z2="3"></DrawLine>
           
-          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="237" y2="237" z1="-3" z2="3"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="238" y2="238" z1="-3" z2="3"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="239" y2="239" z1="-3" z2="3"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="-1" y1="240" y2="240" z1="-3" z2="3"></DrawLine>
           
-          <DrawLine x1="-1" type="lapis_block" x2="30" y1="237" y2="237" z1="3" z2="3"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="30" y1="238" y2="238" z1="3" z2="3"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="30" y1="239" y2="239" z1="3" z2="3"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="30" y1="240" y2="240" z1="3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="247" y2="247" z1="3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="248" y2="248" z1="3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="249" y2="249" z1="3" z2="3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="250" y2="250" z1="3" z2="3"></DrawLine>
           
-          <DrawLine x1="-1" type="lapis_block" x2="30" y1="237" y2="237" z1="-3" z2="-3"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="30" y1="238" y2="238" z1="-3" z2="-3"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="30" y1="239" y2="239" z1="-3" z2="-3"></DrawLine>
-          <DrawLine x1="-1" type="lapis_block" x2="30" y1="240" y2="240" z1="-3" z2="-3"></DrawLine>
           
-          <DrawLine x1="3"  type="redstone_block" x2="4" y1="237" y2="237" z1="0" z2="0"></DrawLine>
-          <DrawLine x1="5"  type="redstone_block" x2="7" y1="237" y2="237" z1="1" z2="1"></DrawLine>
-          <DrawLine x1="5"  type="redstone_block" x2="7" y1="238" y2="238" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="248" y2="248" z1="-3" z2="-3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="249" y2="249" z1="-3" z2="-3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="250" y2="250" z1="-3" z2="-3"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="30" y1="251" y2="251" z1="-3" z2="-3"></DrawLine>
           
-          <DrawLine x1="9"  type="redstone_block" x2="11" y1="237" y2="237" z1="1" z2="1"></DrawLine>
-          <DrawLine x1="9"  type="redstone_block" x2="11" y1="238" y2="238" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="3"  type="redstone_block" x2="4" y1="248" y2="248" z1="0" z2="0"></DrawLine>
+          <DrawLine x1="5"  type="redstone_block" x2="7" y1="248" y2="248" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="5"  type="redstone_block" x2="7" y1="249" y2="249" z1="1" z2="1"></DrawLine>
           
-          <DrawLine x1="12" type="redstone_block" x2="12" y1="237" y2="237" z1="-3" z2="3"></DrawLine>
-          <DrawLine x1="12" type="redstone_block" x2="12" y1="238" y2="238" z1="-3" z2="3"></DrawLine>
-          <DrawLine x1="13" type="redstone_block" x2="13" y1="237" y2="237" z1="-3" z2="3"></DrawLine>
-          <DrawLine x1="13" type="redstone_block" x2="13" y1="238" y2="238" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="9"  type="redstone_block" x2="11" y1="248" y2="248" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="9"  type="redstone_block" x2="11" y1="249" y2="249" z1="1" z2="1"></DrawLine>
           
+          <DrawLine x1="12" type="redstone_block" x2="12" y1="248" y2="248" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="12" type="redstone_block" x2="12" y1="249" y2="249" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="13" type="redstone_block" x2="13" y1="248" y2="248" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="13" type="redstone_block" x2="13" y1="249" y2="249" z1="-3" z2="3"></DrawLine>
+          
+          <DrawCuboid x1="14" y1="200" z1="-2" x2="14" y2="247" z2="0" type="lapis_block"/>
+          <DrawCuboid x1="14" y1="200" z1="1" x2="14" y2="244" z2="1" type="lapis_block"/>
+          <DrawCuboid x1="14" y1="200" z1="2" x2="14" y2="241" z2="2" type="lapis_block"/>
+ 
+          <DrawCuboid x1="15" y1="200" z1="2" x2="15" y2="238" z2="0" type="lapis_block"/>
+          <DrawCuboid x1="15" y1="200" z1="-1" x2="15" y2="235" z2="-1" type="lapis_block"/>
+          <DrawCuboid x1="15" y1="200" z1="-2" x2="15" y2="232" z2="-2" type="lapis_block"/> 
+          
+          <DrawCuboid x1="16" y1="200" z1="-2" x2="16" y2="229" z2="-2" type="lapis_block"/>
+          <DrawCuboid x1="16" y1="200" z1="-1" x2="16" y2="226" z2="-1" type="lapis_block"/>
+          <DrawCuboid x1="16" y1="200" z1="0" x2="16" y2="223" z2="0" type="lapis_block"/> 
+          <DrawCuboid x1="16" y1="200" z1="1" x2="16" y2="220" z2="1" type="lapis_block"/>
+          <DrawCuboid x1="16" y1="200" z1="2" x2="16" y2="217" z2="2" type="lapis_block"/>  
+          
+                    
+          <DrawCuboid x1="16" y1="200" z1="2" x2="22" y2="227" z2="-2" type="lapis_block"/>  
+          <DrawCuboid x1="0" y1="200" z1="-3" x2="22" y2="249" z2="-3" type="lapis_block"/>  
+          <DrawCuboid x1="0" y1="200" z1="3" x2="22" y2="249" z2="3" type="lapis_block"/>  
+          
+          <DrawCuboid x1="4" y1="200" z1="-3" x2="14" y2="246" z2="3" type="lapis_block"/> 
+          <DrawCuboid x1="21" y1="200" z1="-3" x2="21" y2="249" z2="3" type="lapis_block"/> 
           
           </DrawingDecorator>  
            
@@ -67,7 +90,7 @@
   <AgentSection mode="Survival">
     <Name>BotmanMcGee</Name>
     <AgentStart>
-      <Placement pitch="40" x="0.5" y="238.0" yaw="-90" z="0.5"/>
+      <Placement pitch="40" x="0.5" y="249.0" yaw="-90" z="0.5"/>
     </AgentStart>
     <AgentHandlers>
       <ContinuousMovementCommands turnSpeedDegs="180"/>
