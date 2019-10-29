@@ -3,6 +3,7 @@
 import java.awt.Toolkit;
 import java.io.BufferedWriter;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -10,8 +11,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 import org.json.JSONException;
+
+import com.microsoft.msr.malmo.MissionSpec;
 
 import neatsorce.AllGenomeHandler;
 import neatsorce.ConnectionGene;
@@ -23,6 +27,10 @@ import neatsorce.NodeGene;
 import neatsorce.NodeGene.TYPE;
 
 public class MasterRunner {
+	
+	private static String xml;
+	public static final String WORLD = "default_flat_1.xml";
+
 	public static void main(String[] args) throws Exception {
 		int genomeSize = 60 * 80 * 3;
 	    BufferedWriter out = new BufferedWriter(new FileWriter("5%Networks/File1.txt"));
@@ -45,18 +53,22 @@ public class MasterRunner {
 			parent1.addConnectionGene(new ConnectionGene(i,genomeSize + 2, r.nextFloat(),true,connInnovation.getInnovation()));
 			//System.out.println(i);
 		}
-		Toolkit.getDefaultToolkit().beep();
+		//xml = loadXML();
+		//MissionSpec my_mission = new MissionSpec(xml, true);
 
 		long startTime = System.nanoTime();
 		//MyNeuralNetwork n = new MyNeuralNetwork(parent1);
+		MalmoMission min = new MalmoMission(0);
 		
 		AllGenomeHandler eval = new AllGenomeHandler(100, parent1, nodeInnovation, connInnovation) {
 			@Override
-			public float evaluateGenome(Genome genome) throws Exception {
+			public float evaluateGenome(Genome genome, int reset) throws Exception {
 				System.out.println("Running Test");
 				 MyNeuralNetwork n = new MyNeuralNetwork(genome);
-				 MalmoMission min = new MalmoMission(n);
+				 //MalmoMission min = new MalmoMission(n, reset);
+				 min.setNetwork(n);
 				float f = (float)min.runMission();
+				
 				System.out.println(f);
 				long printable = (long)f;
 				rewards.add(printable);
@@ -90,6 +102,15 @@ public class MasterRunner {
 			}*/
 		}
 		
+	}
+	
+	public static String loadXML() throws FileNotFoundException {
+		StringBuffer data = new StringBuffer("");
+		Scanner scan = new Scanner(new File(WORLD));
+		while (scan.hasNextLine()) {
+			data.append(scan.nextLine() + "\n");
+		}
+		return data.toString();
 	}
 }
 

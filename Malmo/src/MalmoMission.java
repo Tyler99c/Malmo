@@ -42,47 +42,84 @@ import neatsorce.MyNeuralNetwork;
 
 public class MalmoMission {
 	private MyNeuralNetwork nn;
-	private int hi;
+	private int reset;
+	private String xml;
+	private MissionSpec my_mission;
+	private AgentHost agent_host;
+	private MissionRecordSpec my_mission_record;
 
-	public MalmoMission(MyNeuralNetwork nn) {
+	public MalmoMission(MyNeuralNetwork nn, int reset) throws Exception {
 		this.nn = nn;
+		this.reset = reset;
+		xml = loadXML();
+		my_mission = new MissionSpec(xml, true);
 	}
+	
+	public MalmoMission(int reset) throws Exception {
+		this.reset = reset;
+		xml = loadXML();
+		my_mission = new MissionSpec(xml, true);
+		agent_host = new AgentHost();
+		if (agent_host.receivedArgument("help")) {
+			System.out.println(agent_host.getUsage());
+			System.exit(0);
+		}
+		my_mission.timeLimitInSeconds(10);
+		my_mission.requestVideo(80, 60);
+		my_mission.rewardForReachingPosition(19.5f, 0.0f, 19.5f, 100.0f, 1.1f);
+
+		my_mission_record = new MissionRecordSpec("./saved_data.tgz");
+		my_mission_record.recordCommands();
+		my_mission_record.recordObservations();
+		System.out.println("Mission set up");
+	}
+	
+	
+	public void setNetwork(MyNeuralNetwork nn) {
+		this.nn = null;
+		this.nn = nn;
+		
+	}
+
 	public static final String WORLD = "default_flat_1.xml";
 	static {
 		System.loadLibrary("MalmoJava"); // attempts to load MalmoJava.dll (on Windows) or libMalmoJava.so (on Linux)
 	}
-	
-	public static String loadXML() throws FileNotFoundException
-	{
+
+	public static String loadXML() throws FileNotFoundException {
 		StringBuffer data = new StringBuffer("");
 		Scanner scan = new Scanner(new File(WORLD));
-		while(scan.hasNextLine()) {
-			data.append(scan.nextLine()+"\n");
+		while (scan.hasNextLine()) {
+			data.append(scan.nextLine() + "\n");
 		}
 		return data.toString();
 	}
 
 	public double runMission() throws Exception {
-		AgentHost agent_host = new AgentHost();
+		/*AgentHost agent_host = new AgentHost();
 		if (agent_host.receivedArgument("help")) {
 			System.out.println(agent_host.getUsage());
 			System.exit(0);
 		}
-		String xml = loadXML();
-		MissionSpec my_mission = new MissionSpec(xml,true);
-		System.out.println("Checkpoint 1");
-		//my_mission.forceWorldReset();
+		if(reset == 200) {
+		my_mission.forceWorldReset();
+		reset = 0;
+		}
+		reset++;
 		my_mission.timeLimitInSeconds(10);
-		//my_mission.requestVideo(320, 240);
-		my_mission.requestVideo(240, 180);
+		my_mission.requestVideo(80, 60);
 		my_mission.rewardForReachingPosition(19.5f, 0.0f, 19.5f, 100.0f, 1.1f);
 
 		MissionRecordSpec my_mission_record = new MissionRecordSpec("./saved_data.tgz");
 		my_mission_record.recordCommands();
-		//my_mission_record.recordMP4(20, 400000);
-		my_mission_record.recordRewards();
 		my_mission_record.recordObservations();
-
+		System.out.println("Mission set up");*/
+		//if(reset > 200) {
+		//my_mission.forceWorldReset();
+		//reset = 0;
+		//}
+		//System.out.println("Reset: " + reset);
+		//reset++;
 		try {
 			agent_host.startMission(my_mission, my_mission_record);
 		} catch (MissionException e) {
@@ -96,6 +133,8 @@ public class MalmoMission {
 			System.exit(1);
 		}
 
+		
+		
 		WorldState world_state;
 		double d = 0.0;
 		double life = 20.0;
@@ -108,10 +147,10 @@ public class MalmoMission {
 		long endTime = 0;
 		double totalTime = 1500;
 		long startTime = System.nanoTime();
-		
-		//System.out.print("Waiting for the mission to start");
+
+		System.out.print("Waiting for the mission to start");
 		do {
-			//System.out.print(".");
+			System.out.print(".");
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException ex) {
@@ -122,8 +161,8 @@ public class MalmoMission {
 			for (int i = 0; i < world_state.getErrors().size(); i++)
 				System.err.println("Error: " + world_state.getErrors().get(i).getText());
 		} while (!world_state.getIsMissionRunning());
-		//System.out.println("");
-
+		// System.out.println("");
+		
 		agent_host.sendCommand("Jump 1");
 		agent_host.sendCommand("Jump 0");
 		// main loop:
@@ -167,18 +206,18 @@ public class MalmoMission {
 
 					JSONObject root = new JSONObject(world_state.getObservations().get(0).getText());
 					d = root.getDouble("XPos");
-					if(d > 20) {
+					if (d > 20) {
 						goalReached = true;
 						endTime = System.nanoTime();
-					}else if(d > 12) {
-						while(root.getDouble("Pitch") < 20) {
+					} else if (d > 12) {
+						while (root.getDouble("Pitch") < 20) {
 							agent_host.sendCommand("pitch -1");
 						}
 					}
-					if(root.getDouble("Life") < life) {
+					if (root.getDouble("Life") < life) {
 						life = root.getDouble("Life");
 					}
-					if(root.getBoolean("IsAlive") == false) {
+					if (root.getBoolean("IsAlive") == false) {
 						alive = false;
 					}
 					timesObserved++;
@@ -190,26 +229,34 @@ public class MalmoMission {
 
 		} while (world_state.getIsMissionRunning());
 
-		//System.out.println("Mission has stopped.");
-		if(goalReached == true) {
+		// Shut things down nicely
+		Thread.sleep(100);
+		Thread.sleep(50);
+		
+		agent_host.sendCommand("quit");
+		// System.out.println("Mission has stopped.");
+		if (goalReached == true) {
 			totalTime = endTime - startTime;
-			totalTime = (totalTime * 4)/1000000;
+			totalTime = (totalTime * 4) / 1000000;
 		}
 		double percentage;
-		percentage = missedObservations/timesObserved;
+		percentage = missedObservations / timesObserved;
 		System.out.println("Observations: " + timesObserved);
 		System.out.println("Miss Chance:" + percentage);
-		if(alive == false) {
-			if(goalReached == true) {
-				return d + (1500.0 -totalTime) - ((20.0 - life) * 100) + 2000;
+		if (alive == false) {
+			if (goalReached == true) {
+				return d + (1500.0 - totalTime) - ((20.0 - life) * 100) + 2000;
 			}
 			return d + 500 - ((20.0 - life) * 100) + 2000;
 		}
-		if(goalReached == true) {
-			return d + (1500.0 - totalTime) + 2000 - ((20.0-life) * 100) + 2000;
+		if (goalReached == true) {
+			return d + (1500.0 - totalTime) + 2000 - ((20.0 - life) * 100) + 2000;
 		}
 		return d + 1500.0 - ((20.0 - life) * 100) + 2000;
 
+		
+		
 	}
+	
 
 }

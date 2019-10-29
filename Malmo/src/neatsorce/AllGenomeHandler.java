@@ -138,7 +138,7 @@ public abstract class AllGenomeHandler {
 			//evaluates the genomes
 			int id = jObj.getJSONObject("Genome").getInt("id");
 
-			float score = evaluateGenome(gen);
+			float score = evaluateGenome(gen, i);
 				
 			scoreKeeper.put(jObj.getJSONObject("Genome").getInt("id"),score);
 			
@@ -296,7 +296,7 @@ public abstract class AllGenomeHandler {
 			
 		}
 		stopTime = System.nanoTime();
-		timed = stopTime - startTime/1000000000;
+		timed = (stopTime - startTime)/1000000000;
 		System.out.println("Took " + timed + "Secounds to make the new generation");
 		//System.out.println("Converting all genomes to next gen");
 		for(int i = 0; i < populationSize; i++) {
@@ -309,7 +309,7 @@ public abstract class AllGenomeHandler {
 	}
 	
 	
-	public abstract float evaluateGenome(Genome genome) throws JSONException, FileNotFoundException, IOException, Exception;
+	public abstract float evaluateGenome(Genome genome, int reset) throws JSONException, FileNotFoundException, IOException, Exception;
 
 	/**
 	 * Selects a random genome from the species chosen, where genomes with a higher

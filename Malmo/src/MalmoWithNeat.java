@@ -42,7 +42,7 @@ public class MalmoWithNeat {
 		for(int i = 0; i < 230400; i++) {
 			inputs.add(1.0f);
 		}
-		MalmoMission min = new MalmoMission(n);
+		MalmoMission min = new MalmoMission(n, 1);
 		double d = min.runMission();
 		System.out.println(d);
 	}
