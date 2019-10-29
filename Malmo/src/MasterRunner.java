@@ -47,12 +47,26 @@ public class MasterRunner {
 		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
 		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
 		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
-		for(int i = 0; i < genomeSize; i++){
-			parent1.addConnectionGene(new ConnectionGene(i,genomeSize, r.nextFloat(),true,connInnovation.getInnovation()));
-			parent1.addConnectionGene(new ConnectionGene(i,genomeSize + 1, r.nextFloat(),true,connInnovation.getInnovation()));
-			parent1.addConnectionGene(new ConnectionGene(i,genomeSize + 2, r.nextFloat(),true,connInnovation.getInnovation()));
-			//System.out.println(i);
+		//Goes through half the the array 30 * 40
+		//Skip the first 80 * 15 pixels 120
+		for(int j = 0; j < 30; j++) {
+				for(int i = 21; i < 41; i++) {
+					for(int pixel = 0; pixel < 3; pixel++) {
+						parent1.addConnectionGene(new ConnectionGene(i+j+pixel,genomeSize, 1.0f,true,connInnovation.getInnovation()));
+						parent1.addConnectionGene(new ConnectionGene(i+j+pixel,genomeSize + 1, 1.0f,true,connInnovation.getInnovation()));
+						parent1.addConnectionGene(new ConnectionGene(i+j+pixel,genomeSize + 2, 1.0f,true,connInnovation.getInnovation()));
+					}
+				}
 		}
+		//Skip the next 20 pixels, then capture the next 40, then skip 20, repeat 30 times
+		//Skip the last 80 * 15 pixels
+		//Goes through entire array 60 * 80
+		/*for(int i = 0; i < genomeSize; i++){
+			parent1.addConnectionGene(new ConnectionGene(i,genomeSize, 1.0f,true,connInnovation.getInnovation()));
+			parent1.addConnectionGene(new ConnectionGene(i,genomeSize + 1, 1.0f,true,connInnovation.getInnovation()));
+			parent1.addConnectionGene(new ConnectionGene(i,genomeSize + 2, 1.0f,true,connInnovation.getInnovation()));
+			//System.out.println(i);
+		}*/
 		//xml = loadXML();
 		//MissionSpec my_mission = new MissionSpec(xml, true);
 
@@ -60,16 +74,16 @@ public class MasterRunner {
 		//MyNeuralNetwork n = new MyNeuralNetwork(parent1);
 		MalmoMission min = new MalmoMission(0);
 		
-		AllGenomeHandler eval = new AllGenomeHandler(100, parent1, nodeInnovation, connInnovation) {
+		AllGenomeHandler eval = new AllGenomeHandler(20, parent1, nodeInnovation, connInnovation) {
 			@Override
 			public float evaluateGenome(Genome genome, int reset) throws Exception {
-				System.out.println("Running Test");
+				//System.out.println("Running Test");
 				 MyNeuralNetwork n = new MyNeuralNetwork(genome);
 				 //MalmoMission min = new MalmoMission(n, reset);
 				 min.setNetwork(n);
 				float f = (float)min.runMission();
 				
-				System.out.println(f);
+				System.out.println(" Score:" + f);
 				long printable = (long)f;
 				rewards.add(printable);
 				return (f);
@@ -90,16 +104,6 @@ public class MasterRunner {
 			System.out.print("\tAmount of species: " + eval.getSpeciesAmount());
 			System.out.print("\tConnections in best performer: " + eval.getFittestGenome());
 			out.close();
-			/*float weightSum = 0;
-			for (ConnectionGene cg : eval.getFittestGenome().getConnectionGenes().values()) {
-				if(cg.getExpressed()) {
-					weightSum += Math.abs(cg.getWeight());
-				}
-			}
-			System.out.println("\t Weight sum:" + weightSum);*/
-			/*if (i % 10 == 0){
-				GenomePrinter.printGenome(eval.getFittestGenome(), "output/connection_sum_100" + i +".png");
-			}*/
 		}
 		
 	}

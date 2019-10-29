@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -96,32 +97,9 @@ public class MalmoMission {
 	}
 
 	public double runMission() throws Exception {
-		/*AgentHost agent_host = new AgentHost();
-		if (agent_host.receivedArgument("help")) {
-			System.out.println(agent_host.getUsage());
-			System.exit(0);
-		}
-		if(reset == 200) {
-		my_mission.forceWorldReset();
-		reset = 0;
-		}
-		reset++;
-		my_mission.timeLimitInSeconds(10);
-		my_mission.requestVideo(80, 60);
-		my_mission.rewardForReachingPosition(19.5f, 0.0f, 19.5f, 100.0f, 1.1f);
-
-		MissionRecordSpec my_mission_record = new MissionRecordSpec("./saved_data.tgz");
-		my_mission_record.recordCommands();
-		my_mission_record.recordObservations();
-		System.out.println("Mission set up");*/
-		//if(reset > 200) {
-		//my_mission.forceWorldReset();
-		//reset = 0;
-		//}
-		//System.out.println("Reset: " + reset);
-		//reset++;
 		try {
 			agent_host.startMission(my_mission, my_mission_record);
+			
 		} catch (MissionException e) {
 			System.err.println("Error starting mission: " + e.getMessage());
 			System.err.println("Error code: " + e.getMissionErrorCode());
@@ -132,18 +110,18 @@ public class MalmoMission {
 			}
 			System.exit(1);
 		}
-
-		
+	
 		
 		WorldState world_state;
 		double d = 0.0;
+		double yPos = 0.0;
 		double life = 20.0;
-		boolean alive = false;
+		int dead = 0;
 		int timesObserved = 0;
 		int missedObservations = 0;
 		String turn = null;
 		int time = 0;
-		boolean goalReached = false;
+		int goalReached = 0;
 		long endTime = 0;
 		double totalTime = 1500;
 		long startTime = System.nanoTime();
@@ -162,9 +140,6 @@ public class MalmoMission {
 				System.err.println("Error: " + world_state.getErrors().get(i).getText());
 		} while (!world_state.getIsMissionRunning());
 		// System.out.println("");
-		
-		agent_host.sendCommand("Jump 1");
-		agent_host.sendCommand("Jump 0");
 		// main loop:
 		do {
 			try {
@@ -176,7 +151,6 @@ public class MalmoMission {
 			world_state = agent_host.getWorldState();
 			TimestampedVideoFrameVector troy = world_state.getVideoFrames();
 			try {
-				if (troy != null) {
 					TimestampedVideoFrame bob = troy.get(0);
 					ByteVector hi = bob.getPixels();
 					List<Float> commands = nn.computeByte(hi);
@@ -185,20 +159,23 @@ public class MalmoMission {
 					} else {
 						agent_host.sendCommand("move 0");
 					}
+					//System.out.println(commands.get(0));
 					double speed = commands.get(1) - 0.5;
 					speed = speed * 2;
 					turn = "turn " + speed;
+					//System.out.println(commands.get(1));
 					agent_host.sendCommand(turn);
+					//System.out.println(commands.get(2));
 					if (commands.get(2) > 0.5f) {
 						agent_host.sendCommand("jump 1");
 					} else {
 						agent_host.sendCommand("jump 0");
 					}
 
-					for (int i = 0; i < world_state.getRewards().size(); i++) {
+					/*for (int i = 0; i < world_state.getRewards().size(); i++) {
 						TimestampedReward reward = world_state.getRewards().get(i);
-						System.out.println("Summed reward: " + reward.getValue());
-					}
+						//System.out.println("Summed reward: " + reward.getValue());
+					}*/
 					for (int i = 0; i < world_state.getErrors().size(); i++) {
 						TimestampedString error = world_state.getErrors().get(i);
 						System.err.println("Error: " + error.getText());
@@ -207,7 +184,7 @@ public class MalmoMission {
 					JSONObject root = new JSONObject(world_state.getObservations().get(0).getText());
 					d = root.getDouble("XPos");
 					if (d > 20) {
-						goalReached = true;
+						goalReached = 1;
 						endTime = System.nanoTime();
 					} else if (d > 12) {
 						while (root.getDouble("Pitch") < 20) {
@@ -218,42 +195,43 @@ public class MalmoMission {
 						life = root.getDouble("Life");
 					}
 					if (root.getBoolean("IsAlive") == false) {
-						alive = false;
+						dead = 1;
+					}
+					if(root.getDouble("YPos") > yPos) {
+						yPos = root.getDouble("YPos");
 					}
 					timesObserved++;
-				}
+					if(root.getJSONArray("floor3x3").get(4).equals("redstone_block")) {
+						dead = 1;
+						life = 0;						
+					}
 			} catch (Exception ob) {
+				
 				missedObservations++;
 				timesObserved++;
 			}
-
 		} while (world_state.getIsMissionRunning());
 
+		if(endTime == 0) {
+			endTime = System.nanoTime();
+		}
+		
+		
 		// Shut things down nicely
 		Thread.sleep(100);
 		Thread.sleep(50);
 		
 		agent_host.sendCommand("quit");
 		// System.out.println("Mission has stopped.");
-		if (goalReached == true) {
-			totalTime = endTime - startTime;
-			totalTime = (totalTime * 4) / 1000000;
-		}
-		double percentage;
-		percentage = missedObservations / timesObserved;
-		System.out.println("Observations: " + timesObserved);
-		System.out.println("Miss Chance:" + percentage);
-		if (alive == false) {
-			if (goalReached == true) {
-				return d + (1500.0 - totalTime) - ((20.0 - life) * 100) + 2000;
-			}
-			return d + 500 - ((20.0 - life) * 100) + 2000;
-		}
-		if (goalReached == true) {
-			return d + (1500.0 - totalTime) + 2000 - ((20.0 - life) * 100) + 2000;
-		}
-		return d + 1500.0 - ((20.0 - life) * 100) + 2000;
 
+	    totalTime = endTime - startTime;
+		totalTime = (totalTime * 4) / 1000000;
+		double percentage = missedObservations / timesObserved;
+		System.out.println("Distance" + d);
+		System.out.print("Observations: " + timesObserved);
+		System.out.print(" Miss Chance:" + percentage);
+		System.out.print("");
+		return 20*d + /*(6000 - totalTime)*/ + (-1000 * dead) + (1000 * goalReached) + (life * 100) + 1000;
 		
 		
 	}

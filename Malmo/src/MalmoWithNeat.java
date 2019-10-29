@@ -1,12 +1,16 @@
 import java.util.List;
 import java.awt.Toolkit;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Random;
 
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.microsoft.msr.malmo.ByteVector;
 
+import jsontogenome.Converter;
 import neatsorce.ConnectionGene;
 import neatsorce.Genome;
 import neatsorce.InnovationGenerator;
@@ -17,7 +21,7 @@ import neatsorce.GenomePrinter;
 
 public class MalmoWithNeat {
 	public static void main(String[] args) throws Exception {
-		InnovationGenerator innovation = new InnovationGenerator();
+		/*InnovationGenerator innovation = new InnovationGenerator();
 		Random r = new Random();
 		GenomePrinter print = new GenomePrinter();
 		Genome parent1 = new Genome(innovation);
@@ -44,6 +48,16 @@ public class MalmoWithNeat {
 		}
 		MalmoMission min = new MalmoMission(n, 1);
 		double d = min.runMission();
-		System.out.println(d);
+		System.out.println(d);*/
+		FileReader fr = new FileReader("5%Networks/FittestGenomes99.json");
+		
+		JSONObject jObj = new JSONObject(new JSONTokener(fr));
+		fr.close();
+		Genome g = Converter.toGenome(jObj, 0);
+		MyNeuralNetwork n = new MyNeuralNetwork(g);
+		MalmoMission min = new MalmoMission(n, 1);
+		double d = min.runMission();
+		
 	}
+	
 }
