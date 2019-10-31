@@ -47,14 +47,18 @@ public class MasterRunner {
 		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
 		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
 		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
+		parent1.addNodeGene(new NodeGene(TYPE.OUTPUT, nodeInnovation.getInnovation()));
 		//Goes through half the the array 30 * 40
-		//Skip the first 80 * 15 pixels 120
-		for(int j = 0; j < 30; j++) {
-				for(int i = 21; i < 41; i++) {
+		//Skip the first 80 * 15 pixels 1200
+		//Gid is 
+		//Goes through each row, starting at row 3
+		for(int y = 15; y < 45; y++) {
+				for(int x = 20; x < 60; x++) {
 					for(int pixel = 0; pixel < 3; pixel++) {
-						parent1.addConnectionGene(new ConnectionGene(i+j+pixel,genomeSize, 1.0f,true,connInnovation.getInnovation()));
-						parent1.addConnectionGene(new ConnectionGene(i+j+pixel,genomeSize + 1, 1.0f,true,connInnovation.getInnovation()));
-						parent1.addConnectionGene(new ConnectionGene(i+j+pixel,genomeSize + 2, 1.0f,true,connInnovation.getInnovation()));
+						parent1.addConnectionGene(new ConnectionGene(x*3+(y*3*80)+pixel,genomeSize, 1.0f,true,connInnovation.getInnovation()));
+						parent1.addConnectionGene(new ConnectionGene(x*3+(y*3*80)+pixel,genomeSize + 1, 1.0f,true,connInnovation.getInnovation()));
+						parent1.addConnectionGene(new ConnectionGene(x*3+(y*3*80)+pixel,genomeSize + 2, 1.0f,true,connInnovation.getInnovation()));
+						parent1.addConnectionGene(new ConnectionGene(x*3+(y*3*80)+pixel,genomeSize + 3, 1.0f,true,connInnovation.getInnovation()));
 					}
 				}
 		}

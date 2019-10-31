@@ -197,6 +197,7 @@ public abstract class AllGenomeHandler {
 				highestScore = f;
 				integerFittestGenome = cough;
 			}
+			cough++;
 		}	
 		
 
@@ -228,6 +229,7 @@ public abstract class AllGenomeHandler {
 			//Grab the id of the fittest genomes and add it to the
 			intNextGenGenomes.add(fitIntSpecies.id);
 			
+			System.out.println("Fittest ID: " + fitIntSpecies.id);
 			
 			FileReader fr = new FileReader("5%Networks/Genomes/Genomes"+newGeneration+".json");
 			

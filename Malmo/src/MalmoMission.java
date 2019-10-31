@@ -124,7 +124,7 @@ public class MalmoMission {
 		int goalReached = 0;
 		long endTime = 0;
 		double totalTime = 1500;
-		long startTime = System.nanoTime();
+
 
 		System.out.print("Waiting for the mission to start");
 		do {
@@ -141,16 +141,20 @@ public class MalmoMission {
 		} while (!world_state.getIsMissionRunning());
 		// System.out.println("");
 		// main loop:
+		long startTime = System.currentTimeMillis();
 		do {
 			try {
-				Thread.sleep(25);
+				Thread.sleep(10);
 			} catch (InterruptedException ex) {
 				System.err.println("User interrupted while mission was running.");
 				return 0.0;
 			}
 			world_state = agent_host.getWorldState();
 			TimestampedVideoFrameVector troy = world_state.getVideoFrames();
+			//JSONObject root = new JSONObject(world_state.getObservations().get(0).getText());
+			//System.out.println(root.getJSONArray("floor3x3").get(4));
 			try {
+					//System.out.println("Begining of loop");
 					TimestampedVideoFrame bob = troy.get(0);
 					ByteVector hi = bob.getPixels();
 					List<Float> commands = nn.computeByte(hi);
@@ -159,23 +163,21 @@ public class MalmoMission {
 					} else {
 						agent_host.sendCommand("move 0");
 					}
-					//System.out.println(commands.get(0));
-					double speed = commands.get(1) - 0.5;
-					speed = speed * 2;
-					turn = "turn " + speed;
-					//System.out.println(commands.get(1));
-					agent_host.sendCommand(turn);
-					//System.out.println(commands.get(2));
+					if(commands.get(1) > 0.5f) {
+						if(commands.get(3) > .5f) {
+							agent_host.sendCommand("strafe 0");
+						}
+						agent_host.sendCommand("strafe 1");
+					}else if (commands.get(3) > 0.5f) {
+						agent_host.sendCommand("strafe -1");
+					}else {
+						agent_host.sendCommand("strafe 0");
+					}
 					if (commands.get(2) > 0.5f) {
 						agent_host.sendCommand("jump 1");
 					} else {
 						agent_host.sendCommand("jump 0");
 					}
-
-					/*for (int i = 0; i < world_state.getRewards().size(); i++) {
-						TimestampedReward reward = world_state.getRewards().get(i);
-						//System.out.println("Summed reward: " + reward.getValue());
-					}*/
 					for (int i = 0; i < world_state.getErrors().size(); i++) {
 						TimestampedString error = world_state.getErrors().get(i);
 						System.err.println("Error: " + error.getText());
@@ -196,25 +198,45 @@ public class MalmoMission {
 					}
 					if (root.getBoolean("IsAlive") == false) {
 						dead = 1;
+					}else {
+						dead = 0;
 					}
 					if(root.getDouble("YPos") > yPos) {
 						yPos = root.getDouble("YPos");
 					}
-					timesObserved++;
-					if(root.getJSONArray("floor3x3").get(4).equals("redstone_block")) {
-						dead = 1;
-						life = 0;						
-					}
+					timesObserved++;				
+					//System.out.println("Block Below: " + root.getJSONArray("floor3x3").get(4));
+					//System.out.println("Block in front: " + root.getJSONArray("floor3x3").get(5));
+					//for(int k = 0; k < 9; k++) {
+					  if(root.getJSONArray("floor3x3").get(0).equals("redstone_block")) {
+						  dead = 1;
+						  life = 0;
+					  }
+					//}
+					/*if(world_state.getIsMissionRunning() == false) {
+						System.out.println("hello");
+					}*/
 			} catch (Exception ob) {
 				
 				missedObservations++;
 				timesObserved++;
 			}
 		} while (world_state.getIsMissionRunning());
-
-		if(endTime == 0) {
-			endTime = System.nanoTime();
+		
+		//System.out.println((double) missedObservations/timesObserved);
+		
+		endTime = System.currentTimeMillis();
+		
+		totalTime = (endTime - startTime)*4;
+		//System.out.println(totalTime);
+		
+		if(totalTime < 3000) {
+			dead = 1;
+			life = 0;
 		}
+		/*if(dead == 1) {
+			totalTime = 10000;
+		}*/
 		
 		
 		// Shut things down nicely
@@ -224,14 +246,8 @@ public class MalmoMission {
 		agent_host.sendCommand("quit");
 		// System.out.println("Mission has stopped.");
 
-	    totalTime = endTime - startTime;
-		totalTime = (totalTime * 4) / 1000000;
-		double percentage = missedObservations / timesObserved;
-		System.out.println("Distance" + d);
-		System.out.print("Observations: " + timesObserved);
-		System.out.print(" Miss Chance:" + percentage);
-		System.out.print("");
-		return 20*d + /*(6000 - totalTime)*/ + (-1000 * dead) + (1000 * goalReached) + (life * 100) + 1000;
+
+		return 100*d /*(10000 - totalTime)*/ + (-250 * dead) + (1000 * goalReached) + /*(life * 25)/*(yPos-247)*200*/ + 250;
 		
 		
 	}
