@@ -17,6 +17,7 @@ import org.json.JSONException;
 
 import com.microsoft.msr.malmo.MissionSpec;
 
+import TestRunners.MalmoMission;
 import neatsorce.AllGenomeHandler;
 import neatsorce.ConnectionGene;
 import neatsorce.Genome;
@@ -33,7 +34,7 @@ public class MasterRunner {
 
 	public static void main(String[] args) throws Exception {
 		int genomeSize = 60 * 80 * 3;
-	    BufferedWriter out = new BufferedWriter(new FileWriter("5%Networks/File1.txt"));
+	    BufferedWriter out = new BufferedWriter(new FileWriter("Networks/5%Networks/File1.txt"));
 	    List<Long> rewards = new ArrayList<Long>();
 		InnovationGenerator connInnovation = new InnovationGenerator();
 		InnovationGenerator nodeInnovation = new InnovationGenerator();
@@ -78,7 +79,7 @@ public class MasterRunner {
 		//MyNeuralNetwork n = new MyNeuralNetwork(parent1);
 		MalmoMission min = new MalmoMission(0);
 		
-		AllGenomeHandler eval = new AllGenomeHandler(20, parent1, nodeInnovation, connInnovation) {
+		AllGenomeHandler eval = new AllGenomeHandler(20, parent1, nodeInnovation, connInnovation, .05f,0, 5) {
 			@Override
 			public float evaluateGenome(Genome genome, int reset) throws Exception {
 				//System.out.println("Running Test");
@@ -97,7 +98,7 @@ public class MasterRunner {
 		for(int i = 0; i < 100; i++) {
 			//System.out.println("Hello");
 			eval.evaluate();
-			out = new BufferedWriter(new FileWriter("5%Networks/File" + i + ".txt"));
+			out = new BufferedWriter(new FileWriter("Networks/5%Networks/File" + i + ".txt"));
 			for(long l : rewards) {
 				out.write(l + "\n");
 			}
