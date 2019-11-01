@@ -57,7 +57,7 @@ public abstract class AllGenomeHandler {
 	private int generation;
 
 	public AllGenomeHandler(int populationSize, Genome startingGenome, InnovationGenerator nodeInnovation,
-			InnovationGenerator connectionInnovation) throws IOException, JSONException {
+			InnovationGenerator connectionInnovation, float mutationRate) throws IOException, JSONException {
 		this.populationSize = populationSize;
 		this.nodeInnovation = nodeInnovation;
 		this.connectionInnovation = connectionInnovation;
@@ -88,6 +88,9 @@ public abstract class AllGenomeHandler {
 		adjustedScoreKeeper = new ArrayList<Float>();
 		//System.out.println("Done making Evaluater");
 		generation = 0;
+		MUTATION_RATE = mutationRate;
+		ADD_CONNECTION_RATE = mutationRate;
+		ADD_NODE_RATE = mutationRate;
 	}
 	
 	
