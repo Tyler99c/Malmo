@@ -36,7 +36,6 @@ public class MyNeuralNetwork {
 			for(ConnectionGene con : gen.getConnectionGenes().values()) {
 				int connected = con.getOutNode();
 				Neurons.get(connected).addInputs(con.getInnovation(), con);
-				System.out.println(j++);
 			}
 	}
 	
@@ -65,12 +64,12 @@ public class MyNeuralNetwork {
 	 * @param inputs
 	 * @return
 	 */
-	public List<Float> computeByte(List<ByteVector> inputs) {
+	public List<Float> computeByte(ByteVector inputs) {
 		ByteVector i = null;
 		ArrayList<Float> outputs = new ArrayList();
 		//For every input nueron
         for(Integer outputNode: outputIds) {
-        	outputs.add(Neurons.get(outputNode).sigmoidByte(Neurons, inputs));
+        	outputs.add(Neurons.get(outputNode).sigmoidByte(Neurons, inputs, 0));
         }
 		return outputs;
 		
@@ -117,7 +116,8 @@ public class MyNeuralNetwork {
 		public float sigmoid(Map<Integer, Neuron> neurons, List<Float> inputs) {
 			//If it's input type return
 			if(type == NodeGene.TYPE.INPUT) {
-				return inputs.get(node.getId());
+				System.out.println("Value at input node:" + inputs.get(node.getId())/(60 * 80 * 9));
+				return inputs.get(node.getId())/(60 * 80 * 9);
 			}
 			//If not for every connection to it mutlipley by the weight and ask for the node signal
 			float total = 0.0f;
@@ -131,21 +131,23 @@ public class MyNeuralNetwork {
 			return (float) (1/( 1 + Math.pow(Math.E,(-1*total))));
 		}
 		
-		public ByteVector sigmoidByte(Map<Integer, Neuron> neurons, List<ByteVector> inputs) {
+		public Float sigmoidByte(Map<Integer, Neuron> neurons, ByteVector inputs, int attempts) {
 			//If it's input type return
-			if(type == NodeGene.TYPE.INPUT) {
-				return inputs.get(node.getId());
+			if(type == NodeGene.TYPE.INPUT || attempts > 10) {
+				//System.out.println("Value at input node:" + (float)inputs.get(node.getId())/(60 * 80 * 9));
+				return (float) inputs.get(node.getId())/(60 * 80 * 9 * 255) ;
 			}
 			//If not for every connection to it mutlipley by the weight and ask for the node signal
 			float total = 0.0f;
+			attempts++;
 			for(ConnectionGene con : inputIds.values()) {
 				//Find every neuron attached to this neural network
-				total = total + con.getWeight() * neurons.get(con.getInNode()).sigmoid(neurons, inputs);
+				total = total + con.getWeight() * neurons.get(con.getInNode()).sigmoidByte(neurons, inputs, attempts);
 				//Ask for the signal from that network it returns
 				//Multiply it by the wieght of the connection
 			}
 			//TImes the entire thing by the sigmoid fucntion
-			return (ByteVector) (1/( 1 + Math.pow(Math.E,(-1*total))));
+			return (float) (1/( 1 + Math.pow(Math.E,(-1*total))));
 		}
 	}
 

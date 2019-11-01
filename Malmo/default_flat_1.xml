@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<Mission xmlns="http://ProjectMalmo.microsoft.com" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <About>
+    <Summary>A simple 10 second mission with a reward for reaching a location.</Summary>
+  </About>
+  
+  <ModSettings>
+    <MsPerTick>5</MsPerTick>
+  </ModSettings>
+
+  <ServerSection>
+    <ServerInitialConditions>
+            <Time>
+                <StartTime>6000</StartTime>
+                <AllowPassageOfTime>false</AllowPassageOfTime>
+            </Time>
+            <Weather>clear</Weather>
+            <AllowSpawning>true</AllowSpawning>
+    </ServerInitialConditions>
+    <ServerHandlers>
+      <FlatWorldGenerator generatorString="3;7,220*1,5*3,2;3;,biome_1"/>
+      <DrawingDecorator>      
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="246" y2="246" z1="-2" z2="-2"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="246" y2="246" z1="-1" z2="-1"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="246" y2="246" z1="0" z2="0"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="246" y2="246" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="246" y2="246" z1="2" z2="2"></DrawLine>
+          <DrawLine x1="-1" type="lapis_block" x2="13" y1="246" y2="246" z1="3" z2="3"></DrawLine>
+          
+          <DrawLine x1="-1" type="redstone_block" x2="13" y1="247" y2="247" z1="-2" z2="-2"></DrawLine>
+          <DrawLine x1="-1" type="redstone_block" x2="13" y1="247" y2="247" z1="-1" z2="-1"></DrawLine>
+          <DrawLine x1="-1" type="redstone_block" x2="13" y1="247" y2="247" z1="0" z2="0"></DrawLine>
+          <DrawLine x1="-1" type="redstone_block" x2="13" y1="247" y2="247" z1="1" z2="1"></DrawLine>
+          <DrawLine x1="-1" type="redstone_block" x2="13" y1="247" y2="247" z1="2" z2="2"></DrawLine>
+          <DrawLine x1="-1" type="redstone_block" x2="13" y1="247" y2="247" z1="3" z2="3"></DrawLine>
+          
+          <DrawCuboid x1="-1" y1="248" z1="-3" x2="-1" y2="251" z2="3" type="lapis_block"/>
+          
+          <DrawCuboid x1="0" y1="248" z1="-3" x2="1" y2="248" z2="3" type="lapis_block"/>
+          
+          <DrawCuboid x1="-1" y1="246" z1="3" x2="30" y2="251" z2="3" type="lapis_block"/>
+          
+          <DrawCuboid x1="-1" y1="246" z1="-3" x2="30" y2="251" z2="-3" type="lapis_block"/>
+          
+          
+          <DrawLine x1="2"  type="lapis_block" x2="4" y1="248" y2="248" z1="0" z2="0"></DrawLine>
+          <DrawLine x1="4"  type="lapis_block" x2="4" y1="248" y2="248" z1="-1" z2="-1"></DrawLine>
+                    
+          <DrawLine x1="5"  type="lapis_block" x2="7" y1="248" y2="248" z1="-1" z2="-1"></DrawLine>
+          <DrawLine x1="5"  type="lapis_block" x2="7" y1="249" y2="249" z1="-1" z2="-1"></DrawLine>
+
+          <DrawLine x1="9"  type="lapis_block" x2="11" y1="248" y2="248" z1="-1" z2="-1"></DrawLine>
+          <DrawLine x1="9"  type="lapis_block" x2="11" y1="249" y2="249" z1="-1" z2="-1"></DrawLine>
+          
+          
+          <DrawLine x1="12" type="lapis_block" x2="12" y1="248" y2="248" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="12" type="lapis_block" x2="12" y1="249" y2="249" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="13" type="lapis_block" x2="13" y1="248" y2="248" z1="-3" z2="3"></DrawLine>
+          <DrawLine x1="13" type="lapis_block" x2="13" y1="249" y2="249" z1="-3" z2="3"></DrawLine>
+          
+          <DrawCuboid x1="14" y1="200" z1="-2" x2="14" y2="247" z2="0" type="lapis_block"/>
+          <DrawCuboid x1="14" y1="200" z1="1" x2="14" y2="244" z2="1" type="lapis_block"/>
+          <DrawCuboid x1="14" y1="200" z1="2" x2="14" y2="241" z2="2" type="lapis_block"/>
+ 
+          <DrawCuboid x1="15" y1="200" z1="2" x2="15" y2="238" z2="0" type="lapis_block"/>
+          <DrawCuboid x1="15" y1="200" z1="-1" x2="15" y2="235" z2="-1" type="lapis_block"/>
+          <DrawCuboid x1="15" y1="200" z1="-2" x2="15" y2="232" z2="-2" type="lapis_block"/> 
+          
+          <DrawCuboid x1="16" y1="200" z1="-2" x2="16" y2="229" z2="-2" type="lapis_block"/>
+          <DrawCuboid x1="16" y1="200" z1="-1" x2="16" y2="226" z2="-1" type="lapis_block"/>
+          <DrawCuboid x1="16" y1="200" z1="0" x2="16" y2="223" z2="0" type="lapis_block"/> 
+          <DrawCuboid x1="16" y1="200" z1="1" x2="16" y2="220" z2="1" type="lapis_block"/>
+          <DrawCuboid x1="16" y1="200" z1="2" x2="16" y2="217" z2="2" type="lapis_block"/>  
+          
+                    
+          <DrawCuboid x1="16" y1="200" z1="2" x2="22" y2="227" z2="-2" type="lapis_block"/>  
+          <DrawCuboid x1="0" y1="200" z1="-3" x2="22" y2="249" z2="-3" type="lapis_block"/>  
+          <DrawCuboid x1="0" y1="200" z1="3" x2="22" y2="249" z2="3" type="lapis_block"/>  
+          
+          <DrawCuboid x1="4" y1="200" z1="-3" x2="14" y2="246" z2="3" type="lapis_block"/>
+          <DrawCuboid x1="13" y1="200" z1="-3" x2="13" y2="247" z2="3" type="lapis_block"/> 
+          <DrawCuboid x1="21" y1="200" z1="-3" x2="21" y2="250" z2="3" type="lapis_block"/> 
+          
+          </DrawingDecorator>  
+           
+      <ServerQuitFromTimeUp description="" timeLimitMs="100000"/>
+      <ServerQuitWhenAnyAgentFinishes/>
+    </ServerHandlers>
+  </ServerSection>
+
+  <AgentSection mode="Survival">
+    <Name>BotmanMcGee</Name>
+    <AgentStart>
+      <Placement pitch="40" x="0.5" y="250.0" yaw="-90" z="0.5"/>
+    </AgentStart>
+    <AgentHandlers>
+      <ContinuousMovementCommands turnSpeedDegs="180"/>
+      <ObservationFromFullStats/>
+      <VideoProducer want_depth="false">
+        <Width>80</Width>
+        <Height>60</Height>
+      </VideoProducer>
+      <ObservationFromGrid>
+          <Grid name="floor3x3">
+          <min x="0" y="-1" z="0"/>
+          <max x="0" y="-1" z="0"/>
+        </Grid>
+      </ObservationFromGrid>
+      <RewardForReachingPosition>
+        <Marker oneshot="true" reward="100" tolerance="1.100000023841858" x="19.5" y="227" z="19.5"/>
+      </RewardForReachingPosition>      
+      <AgentQuitFromReachingPosition>
+        <Marker tolerance="1.100000023841858" x="19.5" y="227.0" z="19.5"/>
+      </AgentQuitFromReachingPosition>
+      <AgentQuitFromTouchingBlockType>
+        <Block type="redstone_block"/>
+      </AgentQuitFromTouchingBlockType>
+    </AgentHandlers>
+  </AgentSection></Mission>

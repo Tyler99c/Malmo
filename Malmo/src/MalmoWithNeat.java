@@ -1,10 +1,16 @@
 import java.util.List;
 import java.awt.Toolkit;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import com.microsoft.msr.malmo.ByteVector;
 
+import jsontogenome.Converter;
 import neatsorce.ConnectionGene;
 import neatsorce.Genome;
 import neatsorce.InnovationGenerator;
@@ -14,8 +20,8 @@ import neatsorce.NodeGene.TYPE;
 import neatsorce.GenomePrinter;
 
 public class MalmoWithNeat {
-	public static void main(String[] args) {
-		InnovationGenerator innovation = new InnovationGenerator();
+	public static void main(String[] args) throws Exception {
+		/*InnovationGenerator innovation = new InnovationGenerator();
 		Random r = new Random();
 		GenomePrinter print = new GenomePrinter();
 		Genome parent1 = new Genome(innovation);
@@ -40,20 +46,18 @@ public class MalmoWithNeat {
 		for(int i = 0; i < 230400; i++) {
 			inputs.add(1.0f);
 		}
-		long endTime = System.nanoTime();
-		double total = (endTime - startTime)/1000000;
-		System.out.println("Total time to construct a network" + total);
-		System.out.println("Lets go");
-		Toolkit.getDefaultToolkit().beep();
-		startTime = System.nanoTime();
-		List<Float> outputs = n.compute(inputs);
-		endTime = System.nanoTime();
-		total = (endTime - startTime)/ 1000000;
-		System.out.println("Total Time for first loop: " + total);
-		System.out.println("Outputs : " + outputs.get(0) +" "+ outputs.get(1) +" "+ outputs.get(2));
+		MalmoMission min = new MalmoMission(n, 1);
+		double d = min.runMission();
+		System.out.println(d);*/
+		FileReader fr = new FileReader("5%Networks/FittestGenomes99.json");
 		
-		//GenomePrinter.printGenome(parent1, "output/parent1.png");
-		//MalmoMission min = new MalmoMission(parent1);
-		//min.runMission();
+		JSONObject jObj = new JSONObject(new JSONTokener(fr));
+		fr.close();
+		Genome g = Converter.toGenome(jObj, 0);
+		MyNeuralNetwork n = new MyNeuralNetwork(g);
+		MalmoMission min = new MalmoMission(n, 1);
+		double d = min.runMission();
+		
 	}
+	
 }
