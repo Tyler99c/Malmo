@@ -10,6 +10,7 @@ import org.json.JSONTokener;
 
 import com.microsoft.msr.malmo.ByteVector;
 
+import TestRunners.MalmoMission;
 import jsontogenome.Converter;
 import neatsorce.ConnectionGene;
 import neatsorce.Genome;
