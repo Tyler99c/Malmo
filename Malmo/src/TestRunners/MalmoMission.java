@@ -231,10 +231,10 @@ public class MalmoMission {
 		totalTime = (endTime - startTime)*4;
 		//System.out.println(totalTime);
 		
-		if(totalTime < 3000) {
+		/*if(totalTime < 3000) {
 			dead = 1;
 			life = 0;
-		}
+		}*/
 		/*if(dead == 1) {
 			totalTime = 10000;
 		}*/

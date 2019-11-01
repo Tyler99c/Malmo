@@ -82,7 +82,7 @@ public abstract class AllGenomeHandler {
 			try(FileWriter file = new FileWriter("Networks/"+Folder+"%Networks"+trial+"/Genomes/Genomes" + i + ".json")){
 			//try(FileWriter file = new FileWriter("Networks/5%Networks/Genomes/test" + i + ".json")){
 			//try(FileWriter file = new FileWriter("test/liltest/Genomes/Genomes"+i+".json")){
-				System.out.println("Networks/"+Folder+"%Networks" + trial +"/Genomes/Genomes" + i + ".json");
+				//System.out.println("Networks/"+Folder+"%Networks" + trial +"/Genomes/Genomes" + i + ".json");
 				file.write(genomeObject.toString());
 				file.flush();
 				file.close();
