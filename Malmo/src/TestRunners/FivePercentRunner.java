@@ -31,7 +31,7 @@ public class FivePercentRunner {
 	public static final String WORLD = "default_flat_1.xml";
 
 	public static void main(String[] args) throws Exception {
-		for (int testNumber = 0; testNumber < 7; testNumber++) {
+		for (int testNumber = 0; testNumber < 8; testNumber++) {
 			int genomeSize = 60 * 80 * 3;
 			BufferedWriter out = new BufferedWriter(new FileWriter("Networks/5%Networks" + testNumber  +"/File1.txt"));
 			List<Long> rewards = new ArrayList<Long>();
@@ -65,7 +65,7 @@ public class FivePercentRunner {
 			long startTime = System.nanoTime();
 			// MyNeuralNetwork n = new MyNeuralNetwork(parent1);
 			MalmoMission min = new MalmoMission(0);
-			AllGenomeHandler eval = new AllGenomeHandler(1, parent1, nodeInnovation, connInnovation, .05f, 5) {
+			AllGenomeHandler eval = new AllGenomeHandler(100, parent1, nodeInnovation, connInnovation, .05f, testNumber, 5) {
 				@Override
 				public float evaluateGenome(Genome genome, int reset) throws Exception {
 					MyNeuralNetwork n = new MyNeuralNetwork(genome);
@@ -78,7 +78,7 @@ public class FivePercentRunner {
 					return (f);
 				}
 			};
-			for (int i = 0; i < 1; i++) {
+			for (int i = 0; i < 100; i++) {
 				eval.evaluate();
 				out = new BufferedWriter(new FileWriter("Networks/5%Networks" + testNumber + "/File" + i + ".txt"));
 				for (long l : rewards) {
@@ -93,5 +93,8 @@ public class FivePercentRunner {
 				out.close();
 			}
 		}
+		
+		
+
 	}
 }

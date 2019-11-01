@@ -59,10 +59,11 @@ public abstract class AllGenomeHandler {
 	private int Folder;
 
 	public AllGenomeHandler(int populationSize, Genome startingGenome, InnovationGenerator nodeInnovation,
-			InnovationGenerator connectionInnovation, float mutationRate, int trail) throws IOException, JSONException {
+			InnovationGenerator connectionInnovation, float mutationRate, int trials, int folders) throws IOException, JSONException {
 		this.populationSize = populationSize;
 		this.nodeInnovation = nodeInnovation;
 		this.connectionInnovation = connectionInnovation;
+		trial = trials;
 		// Adds all Genomes into the array list
 		long startTime = System.nanoTime();
 		if(mutationRate == .05f) {
@@ -75,6 +76,7 @@ public abstract class AllGenomeHandler {
 			Folder = 25;
 		}
 		for (int i = 0; i < populationSize; i++) {
+			
 			System.out.println(i);
 			JSONObject genomeObject = Converter.getConstructGenomeFile(new Genome(startingGenome), i);
 			try(FileWriter file = new FileWriter("Networks/"+Folder+"%Networks"+trial+"/Genomes/Genomes" + i + ".json")){
@@ -105,7 +107,7 @@ public abstract class AllGenomeHandler {
 		MUTATION_RATE = mutationRate;
 		ADD_CONNECTION_RATE = mutationRate;
 		ADD_NODE_RATE = mutationRate;
-		this.trial = trial;
+
 	}
 	
 	
