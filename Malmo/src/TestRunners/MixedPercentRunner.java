@@ -31,7 +31,7 @@ public class MixedPercentRunner {
 	public static final String WORLD = "default_flat_1.xml";
 
 	public static void main(String[] args) throws Exception {
-		for (int testNumber = 8; testNumber < 10; testNumber++) {
+		for (int testNumber = 0; testNumber < 10; testNumber++) {
 			int genomeSize = 60 * 80 * 3;
 			BufferedWriter out = new BufferedWriter(new FileWriter("Networks/15%Networks" + testNumber  +"/File1.txt"));
 			List<Long> rewards = new ArrayList<Long>();
@@ -65,7 +65,7 @@ public class MixedPercentRunner {
 			long startTime = System.nanoTime();
 			// MyNeuralNetwork n = new MyNeuralNetwork(parent1);
 			MalmoMission min = new MalmoMission(0);
-			AllGenomeHandler eval = new AllGenomeHandler(100, parent1, nodeInnovation, connInnovation, .05f,testNumber, 5) {
+			AllGenomeHandler eval = new AllGenomeHandler(1, parent1, nodeInnovation, connInnovation, .05f,testNumber, 5) {
 				@Override
 				public float evaluateGenome(Genome genome, int reset) throws Exception {
 					MyNeuralNetwork n = new MyNeuralNetwork(genome);
@@ -78,7 +78,7 @@ public class MixedPercentRunner {
 					return (f);
 				}
 			};
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < 1; i++) {
 				eval.evaluate();
 				out = new BufferedWriter(new FileWriter("Networks/15%Networks" + testNumber + "/File" + i + ".txt"));
 				for (long l : rewards) {
@@ -93,7 +93,7 @@ public class MixedPercentRunner {
 				out.close();
 			}
 		}
-		for (int testNumber = 8; testNumber < 10; testNumber++) {
+		for (int testNumber = 0; testNumber < 10; testNumber++) {
 			int genomeSize = 60 * 80 * 3;
 			BufferedWriter out = new BufferedWriter(new FileWriter("Networks/15%Networks" + testNumber  +"/File1.txt"));
 			List<Long> rewards = new ArrayList<Long>();
@@ -127,7 +127,7 @@ public class MixedPercentRunner {
 			long startTime = System.nanoTime();
 			// MyNeuralNetwork n = new MyNeuralNetwork(parent1);
 			MalmoMission min = new MalmoMission(0);
-			AllGenomeHandler eval = new AllGenomeHandler(100, parent1, nodeInnovation, connInnovation, .15f, testNumber,15) {
+			AllGenomeHandler eval = new AllGenomeHandler(1, parent1, nodeInnovation, connInnovation, .15f, testNumber,15) {
 				@Override
 				public float evaluateGenome(Genome genome, int reset) throws Exception {
 					MyNeuralNetwork n = new MyNeuralNetwork(genome);
@@ -140,7 +140,7 @@ public class MixedPercentRunner {
 					return (f);
 				}
 			};
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < 1; i++) {
 				eval.evaluate();
 				out = new BufferedWriter(new FileWriter("Networks/15%Networks" + testNumber + "/File" + i + ".txt"));
 				for (long l : rewards) {
@@ -157,7 +157,7 @@ public class MixedPercentRunner {
 		}
 		
 		
-		for (int testNumber = 7; testNumber < 10; testNumber++) {
+		for (int testNumber = 0; testNumber < 10; testNumber++) {
 			int genomeSize = 60 * 80 * 3;
 			BufferedWriter out = new BufferedWriter(new FileWriter("Networks/25%Networks" + testNumber  +"/File1.txt"));
 			List<Long> rewards = new ArrayList<Long>();
@@ -191,7 +191,7 @@ public class MixedPercentRunner {
 			long startTime = System.nanoTime();
 			// MyNeuralNetwork n = new MyNeuralNetwork(parent1);
 			MalmoMission min = new MalmoMission(0);
-			AllGenomeHandler eval = new AllGenomeHandler(100, parent1, nodeInnovation, connInnovation, .25f, testNumber,25) {
+			AllGenomeHandler eval = new AllGenomeHandler(1, parent1, nodeInnovation, connInnovation, .25f, testNumber,25) {
 				@Override
 				public float evaluateGenome(Genome genome, int reset) throws Exception {
 					MyNeuralNetwork n = new MyNeuralNetwork(genome);
@@ -204,7 +204,7 @@ public class MixedPercentRunner {
 					return (f);
 				}
 			};
-			for (int i = 0; i < 100; i++) {
+			for (int i = 0; i < 1; i++) {
 				eval.evaluate();
 				out = new BufferedWriter(new FileWriter("Networks/25%Networks" + testNumber + "/File" + i + ".txt"));
 				for (long l : rewards) {
