@@ -7,6 +7,9 @@ import java.util.Map;
 
 import com.microsoft.msr.malmo.ByteVector;
 
+/**
+ * Original Code by Tyler Forrester
+ */
 public class MyNeuralNetwork {
 	private List<Integer> inputIds;
 	private List<Integer> outputIds;

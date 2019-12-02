@@ -31,9 +31,10 @@ public class FivePercentRunner {
 	public static final String WORLD = "default_flat_1.xml";
 
 	public static void main(String[] args) throws Exception {
-		for (int testNumber = 0; testNumber < 8; testNumber++) {
+		int j = 0;
+		for (int testNumber = 0; testNumber < 10; testNumber++) {
 			int genomeSize = 60 * 80 * 3;
-			BufferedWriter out = new BufferedWriter(new FileWriter("Networks/5%Networks" + testNumber  +"/File1.txt"));
+			BufferedWriter out = null;
 			List<Long> rewards = new ArrayList<Long>();
 			InnovationGenerator connInnovation = new InnovationGenerator();
 			InnovationGenerator nodeInnovation = new InnovationGenerator();
@@ -65,7 +66,7 @@ public class FivePercentRunner {
 			long startTime = System.nanoTime();
 			// MyNeuralNetwork n = new MyNeuralNetwork(parent1);
 			MalmoMission min = new MalmoMission(0);
-			AllGenomeHandler eval = new AllGenomeHandler(100, parent1, nodeInnovation, connInnovation, .05f, testNumber, 5) {
+			AllGenomeHandler eval = new AllGenomeHandler(50, parent1, nodeInnovation, connInnovation, .05f, testNumber, 5) {
 				@Override
 				public float evaluateGenome(Genome genome, int reset) throws Exception {
 					MyNeuralNetwork n = new MyNeuralNetwork(genome);
@@ -80,7 +81,8 @@ public class FivePercentRunner {
 			};
 			for (int i = 0; i < 100; i++) {
 				eval.evaluate();
-				out = new BufferedWriter(new FileWriter("Networks/5%Networks" + testNumber + "/File" + i + ".txt"));
+				out = new BufferedWriter(new FileWriter("5%ResultsFolder/File" + j + ".txt"));
+				j++;
 				for (long l : rewards) {
 					out.write(l + "\n");
 				}

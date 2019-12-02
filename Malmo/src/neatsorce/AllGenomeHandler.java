@@ -28,6 +28,9 @@ import org.json.JSONTokener;
 
 import jsontogenome.Converter;;
 
+/**
+ * Original Code by Hydroza, edited by Tyler Forrester
+ */
 public abstract class AllGenomeHandler {
 
 	private FitnessGeneomeComparator fitComp = new FitnessGeneomeComparator();

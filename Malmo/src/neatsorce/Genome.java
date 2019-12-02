@@ -11,6 +11,9 @@ import com.microsoft.msr.malmo.ByteVector;
 
 import neatsorce.NodeGene.TYPE;
 
+/**
+ * Original Code by Hydroza, edited by Tyler Forrester
+ */
 public class Genome {
 	private Map<Integer, ConnectionGene> connections;
 	private Map<Integer, NodeGene> nodes;

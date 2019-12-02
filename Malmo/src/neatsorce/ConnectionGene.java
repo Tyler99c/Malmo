@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Original Code by Hydroza
+ */
 public class ConnectionGene {
 	private int inNode;
 	private int outNode;
